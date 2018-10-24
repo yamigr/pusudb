@@ -37,9 +37,9 @@ When the values changes by another update or put, the socket will receive the ac
 * url : http://localhost/'db'/'meta'
 * db : name of the database
 * meta: action for the db-query
-    * get (GET- or POST-request) => http://localhost/'db'/get/'key' or { key : '' } 
-    * put (GET- or POST-request) => http://localhost/'db'/put/'key'?..&.. or { key : '', value : '' } 
-    * del (GET- or POST-request) => http://localhost/'db'/del/'key' or { key : '' } 
+    * get (GET- or POST-request) => http://localhost/'db'/get?key='key' or { key : '' } 
+    * put (GET- or POST-request) => { key : '', value : '' } 
+    * del (GET- or POST-request) => http://localhost/'db'/del?key='key'' or { key : '' } 
     * batch (POST-request) => [{},{},{}]
     * stream (POST-request) => { gte : '', lte : '', ... } or {} for get all
     * filter (POST-request) => STRING or OBJECT with the value to filter
