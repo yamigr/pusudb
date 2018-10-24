@@ -27,7 +27,11 @@ pusudb.listen(function(){
 ```
 
 ## Client http or websocket
-It's possible to query the pusudb with a http-request or websockets. The response is a json-object.
+It's possible to query the pusudb with a http-request or websockets. The response is a json-object. 
+
+With websockets it's possible to subscribe the keys in the storage. 
+When the values changes by another update or put, the socket will receive the actual data.
+
 
 ### HTTP
 * url : http://localhost/'db'/'meta'
@@ -64,6 +68,7 @@ It's possible to query the pusudb with a http-request or websockets. The respons
     * filter => STRING or OBJECT with the value to filter
     * update  => { key : '', value : '' }
     * subscribe => key or [ key, ...,...]
+    * unsubscribe => key or [ key, ...,...]
 
 ### JSON-Response
 ```js
