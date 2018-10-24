@@ -47,7 +47,7 @@ When the values changes by another update or put, the socket will receive the ac
     * subscribe
 
 ### Websockets
-* url : http://localhost/'db'
+* url : ws://localhost/'db'
 * db : name of the database
 * data-body: { meta : '', data : ''}
 * meta:
