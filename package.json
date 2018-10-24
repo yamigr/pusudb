@@ -1,0 +1,35 @@
+{
+  "name": "pusudb",
+  "version": "0.0.1",
+  "description": "pusudb is a database-framework to query a key-value-storage by a webservice.",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "homepage": "https://github.com/yamigr/pusudb#readme",
+  "keywords": [
+    "pusuDB",
+    "pusudb",
+    "database",
+    "leveldb",
+    "websocket",
+    "server",
+    "ws",
+    "IoT",
+    "frameworks",
+    "backend"
+  ],
+  "author": "yannick grund, https://github.com/yamigr",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.6.1",
+    "leveldown": "^4.0.1",
+    "levelup": "^3.1.1",
+    "shortid": "^2.2.13",
+    "wildcard": "^1.1.2",
+    "ws": "^6.1.0"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  }
+}
