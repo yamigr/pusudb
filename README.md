@@ -37,7 +37,7 @@ Query-testing can be done with Postman or any websocket-addon in the browser.
 
 ```
 HTTP
-URL: 'http//localhost:3000/db/get?key=person:inMdrWPDv'
+URL: http://localhost:3000/db/get?key=person:inMdrWPDv
 Response: {
             "err": null,
             "data": {
@@ -47,7 +47,7 @@ Response: {
           }
 
 Websocket
-URL: 'ws://localhost:3000/db'
+URL: ws://localhost:3000/db
 JSON-body: {"meta":"get","data":{"key":"person:inMdrWPDv"}}
 Response: {
             "err": null,
