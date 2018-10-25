@@ -26,18 +26,18 @@ pusudb.listen(function(port, host){
 
 ## Client http or websocket
 
-### Example
+### Example request and response
 ```js
 /**********HTTP************/
 //http req
-var http_req_get: '//localhost:3000/db/get?key=person:inMdrWPDv'
+var http_req_get: 'http//localhost:3000/db/get?key=person:inMdrWPDv'
 
 //http res
 {
   "err": null,
   "data": {
     "key": "person:inMdrWPDv",
-    "value": "Moin Pereter"
+    "value": "yamigr"
   }
 }
 
@@ -51,7 +51,7 @@ var body = {"meta":"get","data":{"key":"person:inMdrWPDv"}}
   "err": null,
   "data": {
     "key": "person:inMdrWPDv",
-    "value": "Moin Pereter"
+    "value": "yamigr"
   }
 }
 
