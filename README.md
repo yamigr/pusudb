@@ -26,52 +26,50 @@ pusudb.listen(function(port, host){
 
 ## Client http or websocket
 
-### Example request and response
-```js
-/**********HTTP************/
-//http req
-var http_req_get: 'http//localhost:3000/db/get?key=person:inMdrWPDv'
-
-//http res
-{
-  "err": null,
-  "data": {
-    "key": "person:inMdrWPDv",
-    "value": "yamigr"
-  }
-}
-
-/**********Websocket************/
-// ws req
-var url_to_connect = 'ws://localhost:3000/db'
-var body = {"meta":"get","data":{"key":"person:inMdrWPDv"}}
-
-// ws res
-{
-  "err": null,
-  "data": {
-    "key": "person:inMdrWPDv",
-    "value": "yamigr"
-  }
-}
-
-```
-
-It's possible to query the pusudb with a http-request or websockets. The response is a json-object. 
+It's possible to query the pusudb with a http-request or websocket. The response is a json-object. 
 
 With websockets it's possible to subscribe the keys in the storage. 
 When the values changes by another update or put, the socket will receive the actual data.
 
+### Example request and response
+
+Query-testing can be done with Postman or any websocket-addon in the browser.
+
+```
+HTTP
+URL: http://localhost:3000/db/get?key=person:inMdrWPDv
+Response: {
+            "err": null,
+            "data": {
+              "key": "person:inMdrWPDv",
+              "value": "yamigr"
+            }
+          }
+
+Websocket
+URL: ws://localhost:3000/db
+JSON-body: {"meta":"get","data":{"key":"person:inMdrWPDv"}}
+Response: {
+            "err": null,
+            "data": {
+              "key": "person:inMdrWPDv",
+              "value": "yamigr"
+            }
+          }
+
+```
+
+API Examples: [tcpleveldb](https://www.npmjs.com/package/tcpleveldb)
 
 ### HTTP
 * url : http://localhost:3000/'db'/'meta'
 * db : name of the database
 * meta: action for the db-query
     * get (GET- or POST-request) => http://localhost:3000/'db'/get?key='key' or { key : '' } 
-    * put (GET- or POST-request) => { key : '', value : '' } 
+    * put (GET- or POST-request) => http://localhost:3000/'db'/put?key='key'&value='value' or { key : '', value : '' } 
     * del (GET- or POST-request) => http://localhost:3000/'db'/del?key='key'' or { key : '' } 
     * batch (POST-request) => [{},{},{}]
-    * stream (POST-request) => { gte : '', lte : '', ... } or {} for get all
+    * stream (POST-request) => { gte : '', lte : '', limit : 100, reverse : true, ... } or {} for get all
     * filter (POST-request) => STRING or OBJECT with the value to filter
     * update (POST-request)  => { key : '', value : '' }
     * subscribe
@@ -89,6 +87,7 @@ When the values changes by another update or put, the socket will receive the ac
     * filter 
     * update 
     * subscribe
+    * unsubscribe
 * data:
     * get => { key : '' }
     * put => { key : '', value : '' }
