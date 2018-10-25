@@ -26,6 +26,7 @@
     "leveldown": "^4.0.1",
     "levelup": "^3.1.1",
     "shortid": "^2.2.13",
+    "tcpleveldb": "0.0.10",
     "wildcard": "^1.1.2",
     "ws": "^6.1.0"
   },

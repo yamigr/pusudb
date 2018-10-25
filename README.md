@@ -4,8 +4,6 @@
 
 The database can handle http- or websocket-queries. With websockets it's possible to subscribe certain keys to receive the data-changes in realtime on client-side.
 
-Notice: the framework is under development. Thx.
-
 ## Installing
 ```sh
 npm install pusudb --save
@@ -21,12 +19,44 @@ var host = 'localhost'
 
 var pusudb = new Pusudb(port, host)
 
-pusudb.listen(function(){
-    console.log('pusudb listening')
+pusudb.listen(function(port, host){
+    console.log('pusudb listening:', port, host)
 })
 ```
 
 ## Client http or websocket
+
+### Example
+```js
+// HTTP
+//http req
+var http_req_get: '//localhost:3000/db/get?key=person:inMdrWPDv'
+
+//http res
+{
+  "err": null,
+  "data": {
+    "key": "person:inMdrWPDv",
+    "value": "Moin Pereter"
+  }
+}
+
+// Websockt
+// ws req
+var url_to_conect = 'ws://localhost:3000/db
+var body = {"meta":"get","data":{"key":"person:inMdrWPDv"}}
+
+// ws res
+{
+  "err": null,
+  "data": {
+    "key": "person:inMdrWPDv",
+    "value": "Moin Pereter"
+  }
+}
+
+```
+
 It's possible to query the pusudb with a http-request or websockets. The response is a json-object. 
 
 With websockets it's possible to subscribe the keys in the storage. 
@@ -34,12 +64,12 @@ When the values changes by another update or put, the socket will receive the ac
 
 
 ### HTTP
-* url : http://localhost/'db'/'meta'
+* url : http://localhost:3000/'db'/'meta'
 * db : name of the database
 * meta: action for the db-query
-    * get (GET- or POST-request) => http://localhost/'db'/get?key='key' or { key : '' } 
+    * get (GET- or POST-request) => http://localhost:3000/'db'/get?key='key' or { key : '' } 
     * put (GET- or POST-request) => { key : '', value : '' } 
-    * del (GET- or POST-request) => http://localhost/'db'/del?key='key'' or { key : '' } 
+    * del (GET- or POST-request) => http://localhost:3000/'db'/del?key='key'' or { key : '' } 
     * batch (POST-request) => [{},{},{}]
     * stream (POST-request) => { gte : '', lte : '', ... } or {} for get all
     * filter (POST-request) => STRING or OBJECT with the value to filter
@@ -47,7 +77,7 @@ When the values changes by another update or put, the socket will receive the ac
     * subscribe
 
 ### Websockets
-* url : ws://localhost/'db'
+* url : ws://localhost:3000/'db'
 * db : name of the database
 * data-body: { meta : '', data : ''}
 * meta:
