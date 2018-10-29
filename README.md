@@ -158,9 +158,10 @@ Write
 
 <a name="stream"></a>
 
+### STREAM
+
 Following stream-options are implemented: greater / less than (gt / lt), greater / less than or equal (gte / lte), limit (limit) and reverse (reverse)
 
-### STREAM
 ```
 GET all
 http://http://localhost:3000/db/stream 
