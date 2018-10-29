@@ -88,10 +88,10 @@ Write
 ### GET
 ```
 GET
-http://http://localhost:3000/db/get?key=person:CXpkhn-3T
+http://localhost:3000/db/get?key=person:CXpkhn-3T
 
 POST
-http://http://localhost:3000/db/get
+http://localhost:3000/db/get
 
 body = {
   key : "person:CXpkhn-3T"
@@ -127,7 +127,7 @@ Write
 ### BATCH
 ```
 POST
-http://http://localhost:3000/db/batch
+http://localhost:3000/db/batch
 
 body =  [
   {"type":"del","key":"father"},
@@ -164,17 +164,17 @@ Following stream-options are implemented: greater / less than (gt / lt), greater
 
 ```
 GET all
-http://http://localhost:3000/db/stream 
+http://localhost:3000/db/stream 
 
 GET pagenation
-http://http://localhost:3000/db/stream?gt='last-key-in-list'&limit=50
+http://localhost:3000/db/stream?gt='last-key-in-list'&limit=50
 
 GET stream of persons
-http://http://localhost:3000/db/stream?gte=person:&lte=person:~
+http://localhost:3000/db/stream?gte=person:&lte=person:~
 
 
 POST
-http://http://localhost:3000/db/stream
+http://localhost:3000/db/stream
 
 body = {
   gt : STRING | OBJECT
