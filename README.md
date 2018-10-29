@@ -2,14 +2,35 @@
 
 > pusudb is a database-framework to query the included key-value-storage by webservices or webpages.
 
-The pusudb has a build-in REST-api and communiate with http or websocket. With websockets it's possible to subscribe certain keys to receive the data-changes in realtime on client-side.
+The pusudb has a build-in http- and a websocket-server. 
+With the http-server it's possible to query the pusudb with a request-response-pattern like REST.
+With the websocket-server the pusudb can additionally serve a publish-subscribe-pattern. 
+When a ws-client subscribe a key and another client put or update the certain value by http or ws, 
+all subscribed ws-client receives the actual data.
 
+* [Installing](#installing)
+* [Server](#server)
+* [API](#api)
+  * [put](#put)
+  * [get](#get)
+  * [batch](#batch)
+  * [stream](#stream)
+  * [del](#del)
+  * [update](#update)
+  * [count](#count)
+  * [filter](#filter)
+  * [subscribe](#subscribe)
+  * [unsubscribe](#unsubscribe)
+* [Author](#author)
+* [License](#license)
+
+<a name="installing"></a>
 ## Installing
 
 ```sh
 npm install pusudb --save
 ```
-
+<a name="server"></a>
 ## Server
 
 ```js
@@ -25,143 +46,347 @@ pusudb.listen(function(port, host){
 })
 ```
 
-## Client http or websocket
+<a name="api"></a>
 
-With http it's possible to query the pusudb with a request-response-pattern like REST.
-With websockets the pusudb can additionally serve a publish-subscribe-pattern. 
-When a ws-client subscribe a key and another client put or update the certain value over http or ws, 
-all subscribed ws-client on the certain key receive the actual data. Yaami
+## API
 
-### Example request and response
+The 'db' represents the database. It's possible to create different databases. When a 
+database doesn't exist, the pusudb will create one.
 
-The api can be tested with Postman or any websocket-addon in the browser.
+<a name="put"></a>
 
+### PUT
+When a key has a '@key' in it, the pusudb will create a unique-id. With this options, it's possible to
+create dynamic-key for the certain usage. 
 ```
-HTTP
-
 GET
-URL: http://localhost:3000/db/get?key=person:inMdrWPDv
-Response: {
-            "err": null,
-            "data": {
-              "key": "person:inMdrWPDv",
-              "value": "yamigr"
-            }
-          }
-PUT
-URL: http://localhost:3000/db/put?key=person:inMdrWPDv&value=
-Response: {
-            "err": null,
-            "data": "person:1tebPQmmm"
-          }
--> same response when successful deleting with del
--> or send the data with the method POST
+http://localhost:3000/db/put?key=person:@key&value=Peter Pan
 
+POST
+http://localhost:3000/db/put
+
+body = {
+  key : "person:@key",
+  value : "Peter Pan"
+}
 
 Websocket
-
-GET
-URL: ws://localhost:3000/db
-JSON-body: {"meta":"get","data":{"key":"person:inMdrWPDv"}}
-Response: {
-            "err": null,
-            "data": {
-              "key": "person:inMdrWPDv",
-              "value": "yamigr"
-            }
-          }
-
-
-SUBSCRIBE
-URL: ws://localhost:3000/db
-JSON-body: {"meta":"subscribe","data":"person:inMdrWPDv"}
-Response: none
-Message : {
-            "err": null,
-            "data": {
-              "key": "person:inMdrWPDv",
-              "value": "new name"
-            }
-          }
-
-
-
+ws://localhost:3000/db
+Write
+{"meta":"put","data":{"key":"person:@key","value":"Sue"}}
+```
+#### Result
+```js
+{
+  "err": null,
+  "data": "person:zCzm7e7XT"
+}
 ```
 
-API Examples: [tcpleveldb](https://www.npmjs.com/package/tcpleveldb)
+<a name="get"></a>
 
-### HTTP
-* url : http://localhost:3000/'db'/'meta'
-* db : name of the database
-* meta and query or post-data:
-    * get (GET- or POST-request) => http://localhost:3000/'db'/get?key='key' or { key : '' } 
-    * put (GET- or POST-request) => http://localhost:3000/'db'/put?key='key'&value='value' or { key : '', value : '' } 
-    * del (GET- or POST-request) => http://localhost:3000/'db'/del?key='key'' or { key : '' } 
-    * batch (POST-request) => [{type : 'put' , key : 'some_key', value : 'ok' },{},{}]
-    * stream (POST-request) => { gte : '', lte : '', limit : 100, reverse : true, ... } or {} for get all
-    * filter (POST-request) => STRING or OBJECT with the value to filter
-    * update (POST-request)  => { key : '', value : '' }
+### GET
+```
+GET
+http://http://localhost:3000/db/get?key=person:CXpkhn-3T
 
-### Websockets
-* url : ws://localhost:3000/'db'
-* db : name of the database
-* data-body: { meta : '', data : ''}
-* meta and body-data:
-    * get => { key : '' }
-    * put => { key : '', value : '' }
-    * del => { key : '' }
-    * batch => [{type : 'put' , key : 'some_key', value : 'ok' },{},{}]
-    * stream => { gte : '', lte : '', limit : 100, reverse : true, ... } or {} for get all
-    * filter  => STRING or OBJECT with the value to filter
-    * update  => { key : '', value : '' }
-    * subscribe => key or [ key, ...,...]
-    * unsubscribe => key or [ key, ...,...]
+POST
+http://http://localhost:3000/db/get
 
-### JSON-Response
+body = {
+  key : "person:CXpkhn-3T"
+}
+
+Websocket
+ws://localhost:3000/db
+Write
+{"meta":"get","data":{"key":"person:CXpkhn-3T"}}
+```
+#### Result successful
 ```js
-
-// single result
 {
   "err": null,
   "data": {
-    "key": "obj:2",
-    "value": {
-      "a": 1,
-      "b": "xyz",
-      "c": "Hello World!"
-    }
+    "key": "person:CXpkhn-3T",
+    "value": "Peter Pan"
   }
+}
+```
+#### Result when key not found
+```js
+{
+  "err": "NotFoundError: Key not found in database [person:CX]",
+  "data": {
+    "key": "person:CX"
+  }
+}
+```
+
+<a name="batch"></a>
+
+### BATCH
+```
+POST
+http://http://localhost:3000/db/batch
+
+body =  [
+  {"type":"del","key":"father"},
+  {"type":"put","key":"yamigr","value":"https://github.com/yamigr"},
+  {"type":"put","key":"p:1","value":{"age":24,"avatar":"gomolo"}},
+  {"type":"put","key":"p:2","value":{"age":19,"avatar":"azuzi"}}
+]
+
+
+Websocket
+ws://localhost:3000/db
+Write
+{"meta":"batch","data": [
+                          {"type":"del","key":"father"},
+                          {"type":"put","key":"yamigr","value":"https://github.com/yamigr"},
+                          {"type":"put","key":"p:1","value":{"age":24,"avatar":"gomolo"}},
+                          {"type":"put","key":"p:2","value":{"age":19,"avatar":"azuzi"}}
+                        ]
+}
+```
+#### Result successful
+```js
+{
+  "err": null,
+  "data": 4
+}
+```
+
+<a name="stream"></a>
+
+Following stream-options are implemented: greater / less than (gt / lt), greater / less than or equal (gte / lte), limit (limit) and reverse (reverse)
+
+### STREAM
+```
+GET all
+http://http://localhost:3000/db/stream 
+
+GET pagenation
+http://http://localhost:3000/db/stream?gt='last-key-in-list'&limit=50
+
+GET stream of persons
+http://http://localhost:3000/db/stream?gte=person:&lte=person:~
+
+
+POST
+http://http://localhost:3000/db/stream
+
+body = {
+  gt : STRING | OBJECT
+  lt : STRING | OBJECT
+  gte : STRING | OBJECT
+  lte : STRING | OBJECT
+  reverse : BOOL
+  limit : INTEGER
 }
 
 
-// multiple results
+Websocket
+ws://localhost:3000/db
+Write
+{"meta":"stream","data": { ..., stream-options, ... }}
+```
+#### Result successful
+```js
 {
   "err": null,
   "data": [
     {
-      "key": "obj:1",
-      "value": {
-        "a": 123,
-        "b": "abc",
-        "c": "Hello World!"
-      }
+      "key": "person:AEYC8Y785",
+      "value": "Sarah"
     },
     {
-      "key": "obj:2",
-      "value": {
-        "a": 1,
-        "b": "xyz",
-        "c": "Hello World!"
-      }
+      "key": "person:GLnw5e8If",
+      "value": "Karina"
+    },
+    {
+      "key": "person:HSar_qa4f",
+      "value": "Jan"
     }
   ]
 }
 ```
 
+<a name="del"></a>
+
+### DEL
+
+```
+GET
+http://localhost:3000/db/del?key=person:HSar_qa4f
+
+POST
+http://localhost:3000/db/del
+
+body = {
+  key : "person:HSar_qa4f"
+}
+
+Websocket
+ws://localhost:3000/db
+Write
+{"meta":"del","data":{"key":"person:HSar_qa4f"}}
+```
+#### Result
+```js
+{
+  "err": null,
+  "data": "person:HSar_qa4f"
+}
+```
+
+<a name="update"></a>
+
+### UPDATE
+
+```
+GET
+http://localhost:3000/db/update?key=person:HSar_qa4f&value=NewName
+
+POST
+http://localhost:3000/db/update
+
+body = {
+  key : "person:HSar_qa4f",
+  value: "NewName"
+}
+
+Websocket
+ws://localhost:3000/db
+Write
+{"meta":"update","data":{"key":"person:HSar_qa4f","value":"NewName"}}
+```
+#### Result successful
+```js
+{
+  "err": null,
+  "data": {
+    "key": "person:AEYC8Y785",
+    "value": "NewName"
+  }
+}
+```
+#### Result when key doesn't exist
+```js
+{
+  "err": "NotFoundError: Key not found in database [person:HSar_qa4f]",
+  "data": {
+    "key": "person:HSar_qa4f",
+    "value": "NewName"
+  }
+}
+```
+
+<a name="count"></a>
+
+### COUNT
+
+Use the [stream-options](#stream) to count a specific stream or keep it empty to count all. 
+
+```
+GET
+http://localhost:3000/db/count?<stream-options-query>
+
+POST
+http://localhost:3000/db/count
+
+body = {
+  <stream-options-body>
+}
+
+Websocket
+ws://localhost:3000/db
+Write
+{"meta":"count","data":{ <stream-options-body> }}
+```
+#### Result successful
+```js
+{
+  "err": null,
+  "data": 9
+}
+```
+
+<a name="filter"></a>
+
+### FILTER
+
+```
+GET
+http://localhost:3000/db/filter?value=Sue
+
+POST
+http://localhost:3000/db/filter
+
+body = {
+  value: "Sue"
+}
+
+Websocket
+ws://localhost:3000/db
+Write
+{"meta":"filter","data":{"value":"Sue"}}
+```
+#### Result successful
+```js
+{
+  "err": null,
+  "data": [
+    {
+      "key": "person:9bAuxQVYw",
+      "value": "Sue"
+    }
+  ]
+}
+```
+
+<a name="subscribe"></a>
+
+### SUBSCRIBE
+
+The data can be a STRING or ARRAY to subscribe multiple keys.
+
+```
+Websocket
+ws://localhost:3000/db
+Write
+{"meta":"subscribe","data":"chat:9bAuxQVYw"}
+```
+#### Message when someone put or update the entry
+```js
+{
+  "err": null,
+  "data": {
+    "key": "chat:9bAuxQVYw",
+    "value": "Aloah Joe!"
+  }
+}
+```
+
+<a name="unsubscribe"></a>
+
+### UNSUBSCRIBE
+
+The data can be a STRING or ARRAY to subscribe multiple keys.
+
+```
+Websocket
+ws://localhost:3000/db
+Write
+{"meta":"unsubscribe","data":"chat:9bAuxQVYw"}
+```
+
+<a name="authors"></a>
+
 ## Authors
 
 * **Yannick Grund** - *Initial work* - [yamigr](https://github.com/yamigr)
 
+<a name="license"></a>
 
 ## License
 
