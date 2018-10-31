@@ -32,10 +32,9 @@
   "author": "yannick grund, https://github.com/yamigr",
   "license": "MIT",
   "dependencies": {
-    "leveldown": "^4.0.1",
-    "levelup": "^3.1.1",
+    "async": "^2.6.1",
     "shortid": "^2.2.13",
-    "tcpleveldb": "0.0.10",
+    "tcpleveldb": "0.0.12",
     "wildcard": "^1.1.2",
     "ws": "^6.1.0"
   },
