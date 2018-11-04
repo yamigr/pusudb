@@ -33,6 +33,7 @@
   "license": "MIT",
   "dependencies": {
     "async": "^2.6.1",
+    "portfinder": "^1.0.19",
     "shortid": "^2.2.13",
     "tcpleveldb": "0.0.12",
     "wildcard": "^1.1.2",
