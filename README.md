@@ -74,6 +74,26 @@ pusudb.use('http', function(req, res, next){
 })
 ```
 
+### HTTP CORS requests
+
+To implement the pusudb in a existing server-framework, the pusudb needs to allow CORS-requests.
+This can be done with a middleware like the following example.
+
+```js
+pusudb.use('http', function(req, res, next){
+  if(req.method === 'OPTIONS'){
+    res.setHeader('access-control-allow-origin', req.headers.origin) // main host
+    res.setHeader('access-control-allow-methods', req.method)
+    res.setHeader('access-control-allow-headers', req.headers['access-control-request-headers'])
+    res.end()
+  }
+  else{
+    res.setHeader('access-control-allow-origin', '*')
+    next()
+  }
+})
+```
+
 ### Websocket
 ```js
 pusudb.use('ws', function(req, socket, next){
