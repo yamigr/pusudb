@@ -1,6 +1,6 @@
 {
   "name": "pusudb",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "pusudb is a database-framework to query a key-value-storage by a webservice.",
   "main": "lib/main.js",
   "scripts": {
