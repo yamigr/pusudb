@@ -35,11 +35,12 @@
     "async": "^2.6.1",
     "node-wildcard": "0.0.9",
     "portfinder": "^1.0.19",
-    "shortid": "^2.2.13",
-    "tcpleveldb": "0.0.12",
+    "shortid": "^2.2.14",
+    "tcpleveldb": "0.0.13",
     "ws": "^6.1.0"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "request": "^2.88.0"
   }
 }

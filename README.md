@@ -53,9 +53,7 @@ pusudb.listen(function(port, host){
 
 It's possible to add custom middlewares. These can be defined for each protocol and will be called in series.
 
-**A middleware needs to be declared before the pusudb starts listening.**
-
-It's possible to query the pusudb in the middleware or use the database-result with req.docs.
+Query the pusudb in the middleware or use the database-result with req.docs.
 
 ### HTTP
 ```js
