@@ -55,6 +55,10 @@ It's possible to add custom middlewares. These can be defined for each protocol 
 
 Query the pusudb in the middleware or use the database-result with req.docs.
 
+### Links
+* [https://www.npmjs.com/package/pusudb-use-ejs](pusudb-use-ejs)
+* [https://www.npmjs.com/package/pusudb-use-static-file](pusudb-use-static-file)
+
 ### HTTP
 ```js
 pusudb.use('http', function(req, res, next){
