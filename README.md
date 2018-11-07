@@ -55,15 +55,16 @@ It's possible to add custom middlewares. These can be defined for each protocol 
 
 **A middleware needs to be declared before the pusudb starts listening.**
 
-It's possible to query the pusudb in the middleware.
+It's possible to query the pusudb in the middleware or use the database-result with req.docs.
 
 ### HTTP
 ```js
 pusudb.use('http', function(req, res, next){
-    console.log(req.headers)
-    console.log(req.params.query)
-    console.log(req.body)
-
+    console.log(req.headers) // HTTP-Header
+    console.log(req.params.query) //GET Parameters
+    console.log(req.body) // POST Body
+    console.log(req.docs) // Database result-object descriped in API
+    
     this.db.query('./db','get', { key : "user:abc"}, function(doc){
       if(doc.err)
         next(doc.err) /* or res.writeHead(500) res.end(); direct in here*/
