@@ -20,6 +20,7 @@ all subscribed ws-client receives the actual data.
   * [update](#update)
   * [count](#count)
   * [filter](#filter)
+  * [select multiple queries](#select)
   * [subscribe](#subscribe)
   * [unsubscribe](#unsubscribe)
 * [Author](#author)
@@ -402,6 +403,79 @@ Write
       "value": "Sue"
     }
   ]
+}
+```
+
+<a name="select"></a>
+
+### SELECT MULTIPLE QUERIES
+
+Query the pusudb multiple-times in one step with the keywords select/list. 
+
+```
+GET
+http://localhost:3000/api/select/list?nav=db,stream,%20limit%205,gte%20person:,lte%20person:~&user=db,get,key+person:AEYC8Y785
+
+POST
+http://localhost:3000/api/select/list
+
+body = {
+  nav: { db: 'db', meta: 'stream', data: { limit: 5, gte: 'person:', lte : 'person:~' } },
+  user: { db: 'db', meta: 'get', data: { key: 'person:AEYC8Y785' } } 
+}
+
+```
+#### Result
+```js
+{
+  "user": {
+    "err": null,
+    "data": {
+      "key": "person:AEYC8Y785",
+      "value": "HowHow"
+    }
+  },
+  "nav": {
+    "err": null,
+    "data": [
+      {
+        "key": "person:3xOGAJROo",
+        "value": "Test"
+      },
+      {
+        "key": "person:9bAuxQVYw",
+        "value": "Aloahdsfsds"
+      },
+      {
+        "key": "person:AEYC8Y785",
+        "value": "HowHow"
+      },
+      {
+        "key": "person:GLnw5e8If",
+        "value": "Karina"
+      },
+      {
+        "key": "person:hZ2LweP7s",
+        "value": "Test"
+      },
+      {
+        "key": "person:lb1Kze0lp",
+        "value": "Test"
+      },
+      {
+        "key": "person:mB3y3Rcqm",
+        "value": "John"
+      },
+      {
+        "key": "person:pPJpTf5gy",
+        "value": "Peter"
+      },
+      {
+        "key": "person:zCzm7e7XT",
+        "value": "Cosi"
+      }
+    ]
+  }
 }
 ```
 
