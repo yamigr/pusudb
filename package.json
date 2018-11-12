@@ -41,8 +41,8 @@
   },
   "devDependencies": {
     "mocha": "^5.2.0",
-    "pusudb-use-ejs": "0.0.10",
-    "pusudb-use-static-file": "0.0.20",
+    "pusudb-use-ejs": "0.0.11",
+    "pusudb-use-static-file": "0.0.21",
     "request": "^2.88.0"
   }
 }
