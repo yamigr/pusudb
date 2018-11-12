@@ -40,7 +40,8 @@ var Pusudb = require('pusudb')
 var port = 3000
 var host = 'localhost'
 
-var pusudb = new Pusudb(port, host)
+// Define a prefix to define where the query begins
+var pusudb = new Pusudb(3000, 'localhost', { log: true, prefix : '/api'})
 
 pusudb.listen(function(port, host){
     console.log('pusudb listening:', port, host)
@@ -119,10 +120,10 @@ When a key has a '@key' in it, the pusudb will create a unique-id. With this opt
 create dynamic-key for the certain usage. 
 ```
 GET
-http://localhost:3000/db/put?key=person:@key&value=Peter Pan
+http://localhost:3000/api/db/put?key=person:@key&value=Peter Pan
 
 POST
-http://localhost:3000/db/put
+http://localhost:3000/api/db/put
 
 body = {
   key : "person:@key",
@@ -130,9 +131,9 @@ body = {
 }
 
 Websocket
-ws://localhost:3000/db
+ws://localhost:3000/api/db
 Write
-{"meta":"put","data":{"key":"person:@key","value":"Sue"}}
+{"meta":"put","data":{"key":"person:@key","value":"Peter Pan"}}
 ```
 #### Result
 ```js
@@ -147,17 +148,17 @@ Write
 ### GET
 ```
 GET
-http://localhost:3000/db/get?key=person:CXpkhn-3T
+http://localhost:3000/api/db/get?key=person:CXpkhn-3T
 
 POST
-http://localhost:3000/db/get
+http://localhost:3000/api/db/get
 
 body = {
   key : "person:CXpkhn-3T"
 }
 
 Websocket
-ws://localhost:3000/db
+ws://localhost:3000/api/db
 Write
 {"meta":"get","data":{"key":"person:CXpkhn-3T"}}
 ```
@@ -186,7 +187,7 @@ Write
 ### BATCH
 ```
 POST
-http://localhost:3000/db/batch
+http://localhost:3000/api/db/batch
 
 body =  [
   {"type":"del","key":"father"},
@@ -197,7 +198,7 @@ body =  [
 
 
 Websocket
-ws://localhost:3000/db
+ws://localhost:3000/api/db
 Write
 {"meta":"batch","data": [
                           {"type":"del","key":"father"},
@@ -223,17 +224,17 @@ Following stream-options are implemented: greater / less than (gt / lt), greater
 
 ```
 GET all
-http://localhost:3000/db/stream 
+http://localhost:3000/api/db/stream 
 
 GET pagenation
-http://localhost:3000/db/stream?gt='last-key-in-list'&limit=50
+http://localhost:3000/api/db/stream?gt='last-key-in-list'&limit=50
 
 GET stream of persons
-http://localhost:3000/db/stream?gte=person:&lte=person:~
+http://localhost:3000/api/db/stream?gte=person:&lte=person:~
 
 
 POST
-http://localhost:3000/db/stream
+http://localhost:3000/api/db/stream
 
 body = {
   gt : STRING | OBJECT
@@ -246,7 +247,7 @@ body = {
 
 
 Websocket
-ws://localhost:3000/db
+ws://localhost:3000/api/db
 Write
 {"meta":"stream","data": { ..., stream-options, ... }}
 ```
@@ -277,17 +278,17 @@ Write
 
 ```
 GET
-http://localhost:3000/db/del?key=person:HSar_qa4f
+http://localhost:3000/api/db/del?key=person:HSar_qa4f
 
 POST
-http://localhost:3000/db/del
+http://localhost:3000/api/db/del
 
 body = {
   key : "person:HSar_qa4f"
 }
 
 Websocket
-ws://localhost:3000/db
+ws://localhost:3000/api/db
 Write
 {"meta":"del","data":{"key":"person:HSar_qa4f"}}
 ```
@@ -305,10 +306,10 @@ Write
 
 ```
 GET
-http://localhost:3000/db/update?key=person:HSar_qa4f&value=NewName
+http://localhost:3000/api/db/update?key=person:HSar_qa4f&value=NewName
 
 POST
-http://localhost:3000/db/update
+http://localhost:3000/api/db/update
 
 body = {
   key : "person:HSar_qa4f",
@@ -316,7 +317,7 @@ body = {
 }
 
 Websocket
-ws://localhost:3000/db
+ws://localhost:3000/api/db
 Write
 {"meta":"update","data":{"key":"person:HSar_qa4f","value":"NewName"}}
 ```
@@ -349,17 +350,17 @@ Use the [stream-options](#stream) to count a specific stream or keep it empty to
 
 ```
 GET
-http://localhost:3000/db/count?<stream-options-query>
+http://localhost:3000/api/db/count?<stream-options-query>
 
 POST
-http://localhost:3000/db/count
+http://localhost:3000/api/db/count
 
 body = {
   <stream-options-body>
 }
 
 Websocket
-ws://localhost:3000/db
+ws://localhost:3000/api/db
 Write
 {"meta":"count","data":{ <stream-options-body> }}
 ```
@@ -377,17 +378,17 @@ Write
 
 ```
 GET
-http://localhost:3000/db/filter?value=Sue
+http://localhost:3000/api/db/filter?value=Sue
 
 POST
-http://localhost:3000/db/filter
+http://localhost:3000/api/db/filter
 
 body = {
   value: "Sue"
 }
 
 Websocket
-ws://localhost:3000/db
+ws://localhost:3000/api/db
 Write
 {"meta":"filter","data":{"value":"Sue"}}
 ```
@@ -412,7 +413,7 @@ The data can be a STRING or ARRAY to subscribe multiple keys.
 
 ```
 Websocket
-ws://localhost:3000/db
+ws://localhost:3000/api/db
 Write
 {"meta":"subscribe","data":"chat:9bAuxQVYw"}
 ```
@@ -435,7 +436,7 @@ The data can be a STRING or ARRAY to subscribe multiple keys.
 
 ```
 Websocket
-ws://localhost:3000/db
+ws://localhost:3000/api/db
 Write
 {"meta":"unsubscribe","data":"chat:9bAuxQVYw"}
 ```
