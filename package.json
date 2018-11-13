@@ -4,7 +4,8 @@
   "description": "pusudb is a database-framework to query a key-value-storage by a webservice.",
   "main": "lib/main.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "autotester": "node ./test/cannon.js"
   },
   "homepage": "https://github.com/yamigr/pusudb#readme",
   "keywords": [
@@ -33,6 +34,7 @@
   "license": "MIT",
   "dependencies": {
     "async": "^2.6.1",
+    "debug": "^4.1.0",
     "node-wildcard": "0.0.9",
     "portfinder": "^1.0.19",
     "shortid": "^2.2.14",
@@ -40,8 +42,9 @@
     "ws": "^6.1.0"
   },
   "devDependencies": {
+    "autocannon": "^3.1.0",
     "mocha": "^5.2.0",
-    "pusudb-use-ejs": "0.0.11",
+    "pusudb-use-ejs": "0.0.15",
     "pusudb-use-static-file": "0.0.21",
     "request": "^2.88.0"
   }

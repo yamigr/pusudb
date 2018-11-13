@@ -414,15 +414,49 @@ Query the pusudb multiple-times in one step with the keywords select/list.
 
 ```
 GET
-http://localhost:3000/api/select/list?nav=db,stream,%20limit%205,gte%20person:,lte%20person:~&user=db,get,key+person:AEYC8Y785
+http://localhost:3000/api/select/list?nav=db,stream,limit 5,gte person:,lte person:~&user=db,get,key person:AEYC8Y785
 
 POST
 http://localhost:3000/api/select/list
 
-body = {
-  nav: { db: 'db', meta: 'stream', data: { limit: 5, gte: 'person:', lte : 'person:~' } },
-  user: { db: 'db', meta: 'get', data: { key: 'person:AEYC8Y785' } } 
+body = [
+  { name: 'nav', db: 'db', meta: 'stream', data: { limit: 5, gte: 'person:', lte : 'person:~' } },
+  { name: 'user', db: 'db', meta: 'get', data: { key: 'person:AEYC8Y785' } } 
+]
+
+
+Websocket
+http://localhost:3000/api
+{
+   "meta": "list",
+   "data": [
+      {
+         "name": "nav",
+         "db": "db",
+         "meta": "stream",
+         "data": {
+            "limit": 5,
+            "gte": "person:",
+            "lte": "person:~"
+         }
+      },
+      {
+         "name": "user",
+         "db": "db",
+         "meta": "get",
+         "data": {
+            "key": "person:AEYC8Y785"
+         }
+      }
+   ]
 }
+
+
+
+
+
+
+
 
 ```
 #### Result
