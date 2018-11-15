@@ -13,11 +13,10 @@ var data
 var pusudb
 var useStatic, useEjs
 
-//request.post({url:'http://service.com/upload', form: {key:'value'}}, function(err,httpResponse,body){ /* ... */ })
 
 describe('pusudb framework', function() {
     before(function () {
-        pusudb = new Pusudb(port, host, { log: false, prefix: '/api', path : './database'})
+        pusudb = new Pusudb(port, host, { log: false, prefix: '/api', path : __dirname + '/database'})
         useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
         useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
