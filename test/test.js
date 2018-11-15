@@ -25,6 +25,10 @@ describe('pusudb framework', function() {
 
     });
 
+    after( function(){
+        process.exit()
+    })
+
     describe('#GET API', function() {
         it('create pusudb', function(done) {
             pusudb.listen(function(p, h){
