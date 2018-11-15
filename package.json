@@ -44,7 +44,7 @@
   "devDependencies": {
     "autocannon": "^3.1.0",
     "mocha": "^5.2.0",
-    "pusudb-use-ejs": "0.0.15",
+    "pusudb-use-ejs": "0.0.17",
     "pusudb-use-static-file": "0.0.21",
     "request": "^2.88.0"
   }

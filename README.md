@@ -34,6 +34,12 @@ npm install pusudb --save
 ```
 <a name="server"></a>
 ## Server
+Pusudb(port, host, options)
+
+Options
+* log : BOOL
+* prefix: STRING - the prefix for the db-query
+* path : main path where the database should be stored (relative or absolute)
 
 ```js
 var Pusudb = require('pusudb')
@@ -42,7 +48,7 @@ var port = 3000
 var host = 'localhost'
 
 // Define a prefix to define where the query begins
-var pusudb = new Pusudb(3000, 'localhost', { log: true, prefix : '/api'})
+var pusudb = new Pusudb(3000, 'localhost', {  log: false, prefix: '/api', path : __dirname + '/../database' })
 
 pusudb.listen(function(port, host){
     console.log('pusudb listening:', port, host)
@@ -54,12 +60,25 @@ pusudb.listen(function(port, host){
 ## Middleware
 
 It's possible to add custom middlewares. These can be defined for each protocol and will be called in series.
-
 Query the pusudb in the middleware or use the database-result with req.docs.
+To prehandle a middleware for authentication or some schema-checks, add a middleware with the method useBefore.
 
 ### Links
 * [https://www.npmjs.com/package/pusudb-use-ejs](pusudb-use-ejs)
 * [https://www.npmjs.com/package/pusudb-use-static-file](pusudb-use-static-file)
+
+
+### HTTP before
+```js
+pusudb.useBefore('http', function(req, res, next){
+    console.log(req.headers) // HTTP-Header
+    console.log(req.params) // HTTP parameters like pathname,..
+    console.log(req.params.query) //GET Parameters
+    console.log(req.body) // POST Body
+    // do some header-checks or parse the req.body by a schema
+     next() /* or res.writeHead(401) res.end(); direct in here*/
+})
+```
 
 ### HTTP
 ```js
