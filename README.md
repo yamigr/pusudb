@@ -2,6 +2,8 @@
 
 > pusudb is a database-framework to query the included key-value-storage by webservices or webpages.
 
+[![Build Status](https://travis-ci.org/yamigr/pusudb.svg?branch=master)](https://travis-ci.org/yamigr/pusudb)
+
 The pusudb has a build-in http- and a websocket-server. 
 With the http-server it's possible to query the pusudb with a request-response-pattern like REST.
 With the websocket-server the pusudb can additionally serve a publish-subscribe-pattern. 
