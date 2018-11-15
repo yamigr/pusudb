@@ -16,7 +16,7 @@ var useStatic, useEjs
 
 describe('pusudb framework', function() {
     before(function () {
-        pusudb = new Pusudb(port, host, { log: false, prefix: '/api', path : __dirname + '/database'})
+        pusudb = new Pusudb(port, host, { log: false, prefix: '/api' })
         useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
         useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
