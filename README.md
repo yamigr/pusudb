@@ -1,14 +1,17 @@
 # pusudb
 
-> pusudb is a database-framework to query the included key-value-storage by webservices or webpages.
+> framework to create webservices or web-apps.
 
 [![Build Status](https://travis-ci.org/yamigr/pusudb.svg?branch=master)](https://travis-ci.org/yamigr/pusudb)
 
-The pusudb has a build-in http- and a websocket-server. 
-With the http-server it's possible to query the pusudb with a request-response-pattern like REST.
-With the websocket-server the pusudb can additionally serve a publish-subscribe-pattern. 
-When a ws-client subscribe a key and another client put or update the certain value by http or ws, 
-all subscribed ws-client receives the actual data.
+Information
+* http-webserver
+* websocket-server
+* subscribe and publish pattern
+* request and response pattern
+* implement own middlewares
+* key-value storage
+
 
 * [Installing](#installing)
 * [Server](#server)
@@ -35,6 +38,7 @@ all subscribed ws-client receives the actual data.
 npm install pusudb --save
 ```
 <a name="server"></a>
+
 ## Server
 Pusudb(port, host, options)
 
@@ -61,16 +65,16 @@ pusudb.listen(function(port, host){
 
 ## Middleware
 
-It's possible to add custom middlewares. These can be defined for each protocol and will be called in series.
-Query the pusudb in the middleware or use the database-result with req.docs.
-To prehandle a middleware for authentication or some schema-checks, add a middleware with the method useBefore.
+Normally the pusudb only serves JSON-Data. But with a middleware it's possible to add own functionalities like serving files or do some authentication. To handle the request or response data, take a look at the node.js http documentation. To use from a middleware in a later called middleware, add a new property to the request-object like req['my-new-prop'].
 
 ### Links
 * [https://www.npmjs.com/package/pusudb-use-ejs](pusudb-use-ejs)
 * [https://www.npmjs.com/package/pusudb-use-static-file](pusudb-use-static-file)
 
-
 ### HTTP before
+
+Use a middleware before query the database and the normal middlewares.
+
 ```js
 pusudb.useBefore('http', function(req, res, next){
     console.log(req.headers) // HTTP-Header
@@ -83,6 +87,9 @@ pusudb.useBefore('http', function(req, res, next){
 ```
 
 ### HTTP
+
+Use a middleware after the query. It's possible to query the database again.
+
 ```js
 pusudb.use('http', function(req, res, next){
     console.log(req.headers) // HTTP-Header
@@ -90,6 +97,7 @@ pusudb.use('http', function(req, res, next){
     console.log(req.body) // POST Body
     console.log(req.docs) // Database result-object descriped in API
     
+    // Additional query
     this.db.query('./db','get', { key : "user:abc"}, function(doc){
       if(doc.err)
         next(doc.err) /* or res.writeHead(500) res.end(); direct in here*/
@@ -132,14 +140,16 @@ pusudb.use('ws', function(req, socket, next){
 
 ## API
 
-The 'db' represents the database. It's possible to create different databases. When a 
-database doesn't exist, the pusudb will create one.
+Example url 'http://localhost:3000/[api]/[database]/[meta]
+
+* api - the prefix where the query-string beginns
+* database - the name of the database
+* meta - define the method
 
 <a name="put"></a>
 
 ### PUT
-When a key has a '@key' in it, the pusudb will create a unique-id. With this options, it's possible to
-create dynamic-key for the certain usage. 
+To create unique-ids use '@key' in the string.
 ```
 GET
 http://localhost:3000/api/db/put?key=person:@key&value=Peter Pan
@@ -242,7 +252,7 @@ Write
 
 ### STREAM
 
-Following stream-options are implemented: greater / less than (gt / lt), greater / less than or equal (gte / lte), limit (limit) and reverse (reverse)
+Options: greater / less than (gt / lt), greater / less than and equal (gte / lte), limit (limit) and reverse (reverse)
 
 ```
 GET all
@@ -445,7 +455,6 @@ body = [
   { name: 'user', db: 'db', meta: 'get', data: { key: 'person:AEYC8Y785' } } 
 ]
 
-
 Websocket
 http://localhost:3000/api
 {
@@ -471,13 +480,6 @@ http://localhost:3000/api
       }
    ]
 }
-
-
-
-
-
-
-
 
 ```
 #### Result

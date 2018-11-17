@@ -16,7 +16,7 @@ var useStatic, useEjs
 
 describe('pusudb framework', function() {
     before(function () {
-        pusudb = new Pusudb(port, host, { log: false, prefix: '/api' })
+        pusudb = new Pusudb(port, host, { log: true, prefix: '/api' })
         useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
         useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
@@ -92,8 +92,8 @@ describe('pusudb framework', function() {
                 if(!usedMiddleware1){
                     usedMiddleware1 = true
                     assert.equal(req.params.query.key, 'yamigr')
-                    assert.equal(req.pusudb.db, 'db')
-                    assert.equal(req.pusudb.meta, 'get')
+                    assert.equal(req.params.api.db, 'db')
+                    assert.equal(req.params.api.meta, 'get')
                     assert.equal(req.docs.data.value, 'https://github.com/yamigr')
                     assert.notEqual(req.meta, null)
                     done()
@@ -110,8 +110,8 @@ describe('pusudb framework', function() {
                 if(!usedMiddleware2){
                     usedMiddleware2 = true
                     assert.equal(req.params.query.key, 'yamigr')
-                    assert.equal(req.pusudb.db, 'db')
-                    assert.equal(req.pusudb.meta, 'get')
+                    assert.equal(req.params.api.db, 'db')
+                    assert.equal(req.params.api.meta, 'get')
                     assert.equal(typeof req.docs, 'undefined')
                     assert.notEqual(req.meta, null)
                     done()
@@ -124,22 +124,31 @@ describe('pusudb framework', function() {
 
         it('http static html code 200', function(done){
             request('http://'+ host + ':' + port + '/static/index.html', function (error, response, body) {
-                assert.equal(response.statusCode, '200')
+                assert.equal(response.statusCode, 200)
+                assert.notEqual(body.indexOf('<!DOCTYPE html>'), -1)
                 done()
             });
         })  
 
         it('http static html code 404', function(done){
             request('http://'+ host + ':' + port + '/statica/index.html', function (error, response, body) {
-                assert.equal(response.statusCode, '404')
+                assert.equal(response.statusCode, 404)
                 done()
             });
         })  
 
 
+        it('http ejs page root as index = /', function(done){
+            request('http://'+ host + ':' + port , function (error, response, body) {
+                assert.notEqual(body.indexOf('<!DOCTYPE html>'), -1)
+                done()
+            });
+        })  
+
         it('http ejs page code 200', function(done){
             request('http://'+ host + ':' + port + '/index/api/db/get?key=yamigr', function (error, response, body) {
                 assert.notEqual(body.indexOf('https://github.com/yamigr'), -1)
+                assert.notEqual(body.indexOf('<!DOCTYPE html>'), -1)
                 done()
             });
         })  
@@ -147,7 +156,7 @@ describe('pusudb framework', function() {
         
         it('http ejs page code 404', function(done){
             request('http://'+ host + ':' + port + '/other/api/db/get?key=yamigr', function (error, response, body) {
-                assert.notEqual(body.indexOf('https://github.com/yamigr'), -1)
+                assert.equal(response.statusCode, 404)
                 done()
             });
         })  
