@@ -4,12 +4,9 @@
 
 [![Build Status](https://travis-ci.org/yamigr/pusudb.svg?branch=master)](https://travis-ci.org/yamigr/pusudb)
 
-Information
-* http-webserver
-* websocket-server
-* subscribe and publish pattern
-* request and response pattern
-* implement own middlewares
+The pusudb has a
+* http-webserver to handle requests and responses
+* websocket-server to handle publishes and subscribtions
 * key-value storage
 
 
