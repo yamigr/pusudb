@@ -4,11 +4,8 @@
 
 [![Build Status](https://travis-ci.org/yamigr/pusudb.svg?branch=master)](https://travis-ci.org/yamigr/pusudb)
 
-The pusudb has a
-* http-webserver to handle requests and responses
-* websocket-server to handle publishes and subscribtions
-* key-value storage
-
+The pusudb has a http-webserver to handle requests and responses and a websocket-server to handle publishes and subscribtions. The data is stored in a key-value-storage. 
+Normally the pusudb serves JSON-data, but it's possible to add own middlewares to extends the functionality.
 
 * [Installing](#installing)
 * [Server](#server)
