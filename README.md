@@ -59,7 +59,7 @@ pusudb.listen(function(port, host){
 
 ## Middleware
 
-Normally the pusudb only serves JSON-Data. But with a middleware it's possible to add own functionalities like serving files or do some authentication. To handle the request or response data, take a look at the node.js http documentation. To use from a middleware in a later called middleware, add a new property to the request-object like req['my-new-prop'].
+Normally the pusudb only serves JSON-Data. But with a middleware it's possible to add own functionalities like serving files or do some authentication. To handle the request or response data, take a look at the node.js http documentation. To use data from a middleware in a later called middleware, add a new property to the request-object like req['my-new-prop'].
 
 ### Links
 * [https://www.npmjs.com/package/pusudb-use-ejs](pusudb-use-ejs)
