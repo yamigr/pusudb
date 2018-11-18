@@ -5,6 +5,7 @@ var assert = require('assert');
 var Pusudb = require('../lib/main')
 var UseEjs = require('pusudb-use-ejs')
 var UseStatic = require('pusudb-use-static-file')
+var Websocket = require('ws')
 var port = 3005
 var host = 'localhost'
  
@@ -12,16 +13,27 @@ var host = 'localhost'
 var data
 var pusudb
 var useStatic, useEjs
+var wsIsOpen = false
+var wsData
+var ws
 
-
-describe('pusudb framework', function() {
+describe('pusudb http', function() {
     before(function () {
-        pusudb = new Pusudb(port, host, { log: true, prefix: '/api' })
+        pusudb = new Pusudb(port, host, { log: false, prefix: '/api', path : __dirname + '/../mytestpath' })
         useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
         useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
         pusudb.use('http', useEjs.serve)
         pusudb.use('http', useStatic.serve)
+
+        ws = new Websocket('ws://' + host + ':' + port + '/api/db');
+        ws.on('open', function open() {
+            wsIsOpen = true
+        });
+        
+        ws.on('message', function incoming(data) {
+            wsData = JSON.parse(data)
+        });
 
     });
 
@@ -66,6 +78,8 @@ describe('pusudb framework', function() {
             data =  [
                 {type:"del",key:"father"},
                 {type:"put",key:"yamigr",value:"https://github.com/yamigr"},
+                {type:"put",key:"ya:1",value:"wayne's"},
+                {type:"put",key:"ya:2",value:"world"},
                 {type:"put",key:"p:1",value:{age:24,avatar:"gomolo"}},
                 {type:"put",key:"p:2",value:{age:19,avatar:"azuzi"}}
               ]
@@ -85,6 +99,38 @@ describe('pusudb framework', function() {
                 done(err)
             });
         });
+
+        it('http filter', function(done) {
+            request('http://'+ host + ':' + port + '/api/db/filter?value=https://github.com/yamigr', function (err, response, body) {
+                body = JSON.parse(body)
+                assert.equal(body.data.length, 1)
+                done(err)
+            });
+        });
+
+        it('http update post', function(done) {
+            jsonData = { key : 'p:1', value: {avatar:"jackass"}}
+
+            request.post({url:'http://'+ host + ':' + port + '/api/db/update',     
+                            json: jsonData}, 
+                            function(err,httpResponse,body){ 
+                                request('http://'+ host + ':' + port + '/api/db/get?key=' + jsonData.key, function (error, response, body) {
+                                    data = JSON.parse(body)
+                                    assert.strictEqual(data.data.value.avatar, jsonData.value.avatar)
+                                    done(data.err)
+                                });
+                            })
+
+        });
+
+        it('http count', function(done) {
+            request('http://'+ host + ':' + port + '/api/db/count?gte=p:&lte=p:~', function (err, response, body) {
+                body = JSON.parse(body)
+                assert.equal(body.data, '2')
+                done(err)
+            });
+        });
+
 
         it('http middleware', function(done){
             let usedMiddleware1 = false
@@ -121,6 +167,13 @@ describe('pusudb framework', function() {
             request('http://'+ host + ':' + port + '/api/db/get?key=yamigr');
 
         })
+
+        it('http static page root as index = /', function(done){
+            request('http://'+ host + ':' + port + '/static' , function (error, response, body) {
+                assert.notEqual(body.indexOf('<!DOCTYPE html>'), -1)
+                done()
+            });
+        })  
 
         it('http static html code 200', function(done){
             request('http://'+ host + ':' + port + '/static/index.html', function (error, response, body) {
@@ -163,5 +216,104 @@ describe('pusudb framework', function() {
 
     });
 
+    describe('pusudb websocket', function() {
+        it('websocket put', function(done){
+            setTimeout(function(){
+                try {
+                ws.send(JSON.stringify({"meta":"put","data":{"key":"person:wsTest", "value":"Hello Test!"}}));
+                } catch (e) {
+                /* handle error */
+                console.error(e)
+                }
+    
+                setTimeout(function(){
+                    assert.equal(wsData.data, 'person:wsTest')
+                    done()
+                },50)
+            },500)
+        })  
+
+        it('websocket get', function(done){
+            //setTimeout(function(){
+                try {
+                ws.send(JSON.stringify({"meta":"get","data":{"key":"person:wsTest"}}));
+                } catch (e) {
+                /* handle error */
+                console.error(e)
+                }
+    
+                setTimeout(function(){
+                    assert.equal(wsData.data.value, 'Hello Test!')
+                    done()
+                },50)
+            //},500)
+        })  
+
+        it('websocket subscribe', function(done){
+                try {
+                ws.send(JSON.stringify({"meta":"subscribe","data":"person:wsTest"}));
+                } catch (e) {
+                /* handle error */
+                console.error(e)
+                }
+    
+                setTimeout(function(){
+                    assert.equal(wsData.data, 'subscribed')
+                    done()
+                },50)
+        })  
+
+        it('websocket publish', function(done){
+                request('http://'+ host + ':' + port + '/api/db/update?key=person:wsTest&value=new message');
+                setTimeout(function(){
+                    assert.equal(wsData.data.value, 'new message')
+                    ws.send(JSON.stringify({"meta":"unsubscribe","data":"person:wsTest"}));
+                    done()
+                },50)
+        })
+
+        it('websocket subscribe wildcard', function(done){
+            try {
+            ws.send(JSON.stringify({"meta":"subscribe","data":"ya:#"}));
+            } catch (e) {
+            /* handle error */
+            console.error(e)
+            }
+
+            setTimeout(function(){
+                assert.equal(wsData.data, 'subscribed')
+                done()
+            },50)
+        })  
+
+        it('websocket publish wildcard', function(done){
+                request('http://'+ host + ':' + port + '/api/db/update?key=ya:1&value=new message');
+                setTimeout(function(){
+                    assert.equal(wsData.data.value, 'new message')
+                    ws.send(JSON.stringify({"meta":"unsubscribe","data":"ya:#"}));
+                    done()
+                },50)
+        })
+
+
+        it('websocket unsubscribed check', function(done){
+            wsData = null
+            request('http://'+ host + ':' + port + '/api/db/update?key=person:wsTest&value=bla');
+            setTimeout(function(){
+                assert.strictEqual(wsData, null)
+                done()
+            },50)
+        })
+
+        it('websocket unsubscribed wildcard check', function(done){
+            wsData = null
+            request('http://'+ host + ':' + port + '/api/db/update?key=ya:1&value=party time excellent');
+            setTimeout(function(){
+                assert.strictEqual(wsData, null)
+                done()
+            },50)
+        })
+
+    })
 });
   

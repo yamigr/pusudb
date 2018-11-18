@@ -34,12 +34,6 @@ npm install pusudb --save
 <a name="server"></a>
 
 ## Server
-Pusudb(port, host, options)
-
-Options
-* log : BOOL
-* prefix: STRING - the prefix for the db-query
-* path : main path where the database should be stored (relative or absolute)
 
 ```js
 var Pusudb = require('pusudb')
@@ -47,7 +41,14 @@ var Pusudb = require('pusudb')
 var port = 3000
 var host = 'localhost'
 
-// Define a prefix to define where the query begins
+/*
+Pusudb(port, host, options)
+
+Options
+* log : BOOL - log some data in the console
+* prefix: STRING - the prefix for the database-query
+* path : main path where the database is located (relative or absolute)
+*/
 var pusudb = new Pusudb(3000, 'localhost', {  log: false, prefix: '/api', path : __dirname + '/../database' })
 
 pusudb.listen(function(port, host){
@@ -59,7 +60,7 @@ pusudb.listen(function(port, host){
 
 ## Middleware
 
-Normally the pusudb only serves JSON-Data. But with a middleware it's possible to add own functionalities like serving files or do some authentication. To handle the request or response data, take a look at the node.js http documentation. To use data from a middleware in a later called middleware, add a new property to the request-object like req['my-new-prop'].
+Normally the pusudb only serves JSON-Data. But with a middleware it's possible to add own functionalities like serving files or do some authentication. To handle the request or response data, take a look at the node.js http documentation. To use data from one middleware to a later called middleware, add a new property to the request-object like req['my-new-prop'].
 
 ### Links
 * [https://www.npmjs.com/package/pusudb-use-ejs](pusudb-use-ejs)
@@ -82,7 +83,7 @@ pusudb.useBefore('http', function(req, res, next){
 
 ### HTTP
 
-Use a middleware after the query. It's possible to query the database again.
+Use a middleware after the query. It's possible to query the database again or use the result by req.docs.
 
 ```js
 pusudb.use('http', function(req, res, next){
@@ -143,7 +144,7 @@ Example url 'http://localhost:3000/[api]/[database]/[meta]
 <a name="put"></a>
 
 ### PUT
-To create unique-ids use '@key' in the string.
+To create unique-ids add '@key' to the key-property.
 ```
 GET
 http://localhost:3000/api/db/put?key=person:@key&value=Peter Pan

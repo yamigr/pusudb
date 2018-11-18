@@ -38,13 +38,13 @@
     "portfinder": "^1.0.19",
     "shortid": "^2.2.14",
     "tcpleveldb": "0.0.13",
-    "ws": "^6.1.0"
+    "ws": "^6.1.2"
   },
   "devDependencies": {
     "autocannon": "^3.1.0",
     "mocha": "^5.2.0",
-    "pusudb-use-ejs": "0.0.18",
-    "pusudb-use-static-file": "0.0.22",
+    "pusudb-use-ejs": "1.0.1",
+    "pusudb-use-static-file": "1.0.1",
     "request": "^2.88.0"
   }
 }
