@@ -9,13 +9,13 @@ var Websocket = require('ws')
 var port = 3005
 var host = 'localhost'
  
-
 var data
 var pusudb
 var useStatic, useEjs
 var wsIsOpen = false
 var wsData
 var ws
+var wsMiddleware = null
 
 describe('pusudb http', function() {
     before(function () {
@@ -25,6 +25,12 @@ describe('pusudb http', function() {
 
         pusudb.use('http', useEjs.serve)
         pusudb.use('http', useStatic.serve)
+
+        pusudb.use('ws', function(req, ws, next){
+            wsMiddleware = req.headers
+            next()
+        })
+
 
         ws = new Websocket('ws://' + host + ':' + port + '/api/db');
         ws.on('open', function open() {
@@ -158,7 +164,7 @@ describe('pusudb http', function() {
                     assert.equal(req.params.query.key, 'yamigr')
                     assert.equal(req.params.api.db, 'db')
                     assert.equal(req.params.api.meta, 'get')
-                    assert.equal(typeof req.docs, 'undefined')
+                    assert.equal(req.docs.data, '')
                     assert.notEqual(req.meta, null)
                     done()
                 }
@@ -217,24 +223,41 @@ describe('pusudb http', function() {
     });
 
     describe('pusudb websocket', function() {
-        it('websocket put', function(done){
+
+        it('websocket middleware', function(done){
+            let usedMiddleware3 = false
             setTimeout(function(){
-                try {
+                try{
                 ws.send(JSON.stringify({"meta":"put","data":{"key":"person:wsTest", "value":"Hello Test!"}}));
                 } catch (e) {
                 /* handle error */
                 console.error(e)
                 }
-    
-                setTimeout(function(){
-                    assert.equal(wsData.data, 'person:wsTest')
-                    done()
-                },50)
+
             },500)
+
+            setTimeout(function(){
+                assert.equal(wsMiddleware['sec-websocket-version'] , 13)
+                done()
+            },750)
+        })
+
+
+        it('websocket put', function(done){
+            try {
+            ws.send(JSON.stringify({"meta":"put","data":{"key":"person:wsTest", "value":"Hello Test!"}}));
+            } catch (e) {
+            /* handle error */
+            console.error(e)
+            }
+
+            setTimeout(function(){
+                assert.equal(wsData.data, 'person:wsTest')
+                done()
+            },50)
         })  
 
         it('websocket get', function(done){
-            //setTimeout(function(){
                 try {
                 ws.send(JSON.stringify({"meta":"get","data":{"key":"person:wsTest"}}));
                 } catch (e) {
@@ -246,7 +269,6 @@ describe('pusudb http', function() {
                     assert.equal(wsData.data.value, 'Hello Test!')
                     done()
                 },50)
-            //},500)
         })  
 
         it('websocket subscribe', function(done){
@@ -314,6 +336,48 @@ describe('pusudb http', function() {
             },50)
         })
 
+        it('websocket wrong meta', function(done){
+            try {
+                ws.send(JSON.stringify({"meta":"blabla","data":"ya:#"}));
+                } catch (e) {
+                /* handle error */
+                console.error(e)
+                }
+    
+                setTimeout(function(){
+                    assert.equal(wsData.err, 'query not exist.')
+                    done()
+                },50)
+        })
+
+        it('websocket Unexpected token', function(done){
+            try {
+                ws.send('blabla');
+                } catch (e) {
+                /* handle error */
+                console.error(e)
+                }
+    
+                setTimeout(function(){
+                    assert.equal(wsData.err, 'internal error.')
+                    done()
+                },50)
+        })
+
+        
+        it('websocket empty data', function(done){
+            try {
+                ws.send(JSON.stringify({}));
+                } catch (e) {
+                /* handle error */
+                console.error(e)
+                }
+    
+                setTimeout(function(){
+                    assert.equal(wsData.err, 'query not exist.')
+                    done()
+                },50)
+        })
     })
 });
   
