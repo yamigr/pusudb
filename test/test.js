@@ -19,7 +19,7 @@ var wsMiddleware = null
 
 describe('pusudb http', function() {
     before(function () {
-        pusudb = new Pusudb(port, host, { log: false, prefix: '/api', path : __dirname + '/../mytestpath' })
+        pusudb = new Pusudb(port, host, { log: true, prefix: '/api', path : __dirname + '/../mytestpath' })
         useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
         useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
