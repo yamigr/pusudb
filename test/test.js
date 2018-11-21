@@ -17,9 +17,11 @@ var wsData
 var ws
 var wsMiddleware = null
 
+var uid = '==bla=='
+
 describe('pusudb http', function() {
     before(function () {
-        pusudb = new Pusudb(port, host, { log: true, prefix: '/api', path : __dirname + '/../mytestpath' })
+        pusudb = new Pusudb(port, host, { log: true, prefix: '/api', path : __dirname + '/../mytestpath', uniqueId : uid })
         useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
         useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
@@ -56,8 +58,9 @@ describe('pusudb http', function() {
         });
 
         it('http put', function(done) {
-            request('http://'+ host + ':' + port + '/api/db/put?key=person:@key&value=Test', function (error, response, body) {
+            request('http://'+ host + ':' + port + '/api/db/put?key=person:' + uid + '&value=Test', function (error, response, body) {
                 data = JSON.parse(body)
+                console.log(data)
                 done(data.err)
             });
         });
