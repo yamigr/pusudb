@@ -60,7 +60,6 @@ describe('pusudb http', function() {
         it('http put', function(done) {
             request('http://'+ host + ':' + port + '/api/db/put?key=person:' + uid + '&value=Test', function (error, response, body) {
                 data = JSON.parse(body)
-                console.log(data)
                 done(data.err)
             });
         });
@@ -151,6 +150,7 @@ describe('pusudb http', function() {
                     assert.equal(req.params.api.meta, 'get')
                     assert.equal(req.docs.data.value, 'https://github.com/yamigr')
                     assert.notEqual(req.meta, null)
+                    assert.notEqual(req.db, null)
                     done()
                 }
                 next()
