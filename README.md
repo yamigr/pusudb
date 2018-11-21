@@ -83,7 +83,7 @@ pusudb.useBefore('http', function(req, res, next){
 
 ### HTTP
 
-Use a middleware after the query. It's possible to query the database again or use the result by req.docs.
+Use a middleware after the query. To query the db use req.db.query like in the following example.
 
 ```js
 pusudb.use('http', function(req, res, next){
@@ -93,7 +93,7 @@ pusudb.use('http', function(req, res, next){
     console.log(req.docs) // Database result-object descriped in API
     
     // Additional query
-    this.db.query('./db','get', { key : "user:abc"}, function(doc){
+    req.db.query('./db','get', { key : "user:abc"}, function(doc){
       if(doc.err)
         next(doc.err) /* or res.writeHead(500) res.end(); direct in here*/
       else
