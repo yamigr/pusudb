@@ -146,23 +146,23 @@ Example url 'http://localhost:3000/[api]/[database]/[meta]
 <a name="put"></a>
 
 ### PUT
-To create unique-ids add '${key}' to the key-property or the defined key by options.
+To create unique-ids add '@key' to the key-property or the defined uniqueId-key in the pusudb-options.
 ```
 GET
-http://localhost:3000/api/db/put?key=person:${key}&value=Peter Pan
+http://localhost:3000/api/db/put?key=person:@key&value=Peter Pan
 
 POST
 http://localhost:3000/api/db/put
 
 body = {
-  key : "person:${key}",
+  key : "person:@key",
   value : "Peter Pan"
 }
 
 Websocket
 ws://localhost:3000/api/db
 Write
-{"meta":"put","data":{"key":"person:${key}","value":"Peter Pan"}}
+{"meta":"put","data":{"key":"person:@key","value":"Peter Pan"}}
 ```
 #### Result
 ```js
