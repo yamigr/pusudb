@@ -48,9 +48,9 @@ Options
 * log : BOOL - log some data in the console
 * prefix: STRING - the prefix for the database-query
 * path : main path where the database is located (relative or absolute)
-* uniqueId : the special string which is replaced by a unique key before the data is stored in db
+* uniqueId : default : '@key'. the special string which is replaced by a unique key before the data is stored in db 
 */
-var pusudb = new Pusudb(3000, 'localhost', {  log: false, prefix: '/api', path : __dirname + '/../database', uniqueId : '--uid' /* default : '${key}' */ })
+var pusudb = new Pusudb(3000, 'localhost', {  log: false, prefix: '/api', path : __dirname + '/../database', uniqueId : '--uid' })
 
 pusudb.listen(function(port, host){
     console.log('pusudb listening:', port, host)
