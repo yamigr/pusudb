@@ -447,7 +447,8 @@ Write
 <a name="select"></a>
 
 ### SELECT MULTIPLE QUERIES
-Querying the pusudb multiple-times in one step with the keywords select/list. 
+
+Querying the pusudb multiple-times in one step with the keywords select/list. A base64-encoded JSON-object is supported too.
 
 ```
 GET
@@ -488,58 +489,41 @@ http://localhost:3000/api
 }
 
 ```
-#### Result
+
+#### Encoded
+
+Use keyword hash to define a encoded query (base64).
+
+Generate base64-string:
+* browser: use atob and btoa
+* nodejs:
 ```js
-{
-  "user": {
-    "err": null,
-    "data": {
-      "key": "person:AEYC8Y785",
-      "value": "HowHow"
-    }
-  },
-  "nav": {
-    "err": null,
-    "data": [
-      {
-        "key": "person:3xOGAJROo",
-        "value": "Test"
-      },
-      {
-        "key": "person:9bAuxQVYw",
-        "value": "Aloahdsfsds"
-      },
-      {
-        "key": "person:AEYC8Y785",
-        "value": "HowHow"
-      },
-      {
-        "key": "person:GLnw5e8If",
-        "value": "Karina"
-      },
-      {
-        "key": "person:hZ2LweP7s",
-        "value": "Test"
-      },
-      {
-        "key": "person:lb1Kze0lp",
-        "value": "Test"
-      },
-      {
-        "key": "person:mB3y3Rcqm",
-        "value": "John"
-      },
-      {
-        "key": "person:pPJpTf5gy",
-        "value": "Peter"
-      },
-      {
-        "key": "person:zCzm7e7XT",
-        "value": "Cosi"
-      }
-    ]
-  }
+// create a encoded base64-string. escapeForUrl : bool to generate a get-query-friendly-string ;)
+var encoded = pusudb.encodeJsonToBase64(jsonObject, escapeForUrl)
+// decode the base64 to json
+var decoded = pusudb.decodeBase64ToJson(encoded)
+```
+
+```
+GET
+http://localhost:3000/api/select/list?hash=W3sibmFtZSI6Im5hdiIsImRiIjoiZGIiLCJtZXRhIjoic3RyZWFtIiwiZGF0YSI6eyJsaW1pdCI6NSwiZ3RlIjoicGVyc29uOiIsImx0ZSI6InBlcnNvbjp%2BIn19LHsibmFtZSI6InVzZXIiLCJkYiI6ImRiIiwibWV0YSI6ImdldCIsImRhdGEiOnsia2V5IjoicGVyc29uOkFFWUM4WTc4NSJ9fV0%3D
+
+POST
+http://localhost:3000/api/select/list
+
+body = {
+  hash : 'W3sibmFtZSI6Im5hdiIsImRiIjoiZGIiLCJtZXRhIjoic3RyZWFtIiwiZGF0YSI6eyJsaW1pdCI6NSwiZ3RlIjoicGVyc29uOiIsImx0ZSI6InBlcnNvbjp+In19LHsibmFtZSI6InVzZXIiLCJkYiI6ImRiIiwibWV0YSI6ImdldCIsImRhdGEiOnsia2V5IjoicGVyc29uOkFFWUM4WTc4NSJ9fV0='
 }
+
+Websocket
+http://localhost:3000/api
+{
+   "meta": "list",
+   "data": {
+     "hash": "W3sibmFtZSI6Im5hdiIsImRiIjoiZGIiLCJtZXRhIjoic3RyZWFtIiwiZGF0YSI6eyJsaW1pdCI6NSwiZ3RlIjoicGVyc29uOiIsImx0ZSI6InBlcnNvbjp         +In19LHsibmFtZSI6InVzZXIiLCJkYiI6ImRiIiwibWV0YSI6ImdldCIsImRhdGEiOnsia2V5IjoicGVyc29uOkFFWUM4WTc4NSJ9fV0="
+   }
+}
+
 ```
 
 <a name="subscribe"></a>
