@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/yamigr/pusudb.svg?branch=master)](https://travis-ci.org/yamigr/pusudb)
 
-The pusudb has a http-webserver to handle requests and responses and a websocket-server to handle publishes and subscribtions. The data is stored in a key-value-storage. 
+The pusudb has a http-webserver to handle rest-requests and responses and a websocket-server to handle publishes and subscribtions. The data is stored in a key-value-storage. 
 Normally the pusudb serves JSON-data, but it's possible to add own middlewares to extends the functionality.
 
 * [Installing](#installing)
@@ -48,7 +48,7 @@ Options
 * log : BOOL - log some data in the console
 * prefix: STRING - the prefix for the database-query
 * path : main path where the database is located (relative or absolute)
-* uniqueId : default : '@key'. the special string which is replaced by a unique key before the data is stored in db 
+* uniqueId : default : '@key'. is replaced by a unique key
 */
 var pusudb = new Pusudb(3000, 'localhost', {  log: false, prefix: '/api', path : __dirname + '/../database', uniqueId : '--uid' })
 
@@ -61,7 +61,7 @@ pusudb.listen(function(port, host){
 
 ## Middleware
 
-Normally the pusudb only serves JSON-Data. But with a middleware it's possible to add own functionalities like serving files or do some authentication. To handle the request or response data, take a look at the node.js http documentation. To use data from one middleware to a later called middleware, add a new property to the request-object like req['my-new-prop'].
+With a middleware it's possible to add own functionalities to the pusudb-framwork. To handle the request or response data, take a look at the node.js http documentation. To use data from one middleware to a later called middleware, add a new property to the request-object like req['my-new-prop'].
 
 ### Links
 * [https://www.npmjs.com/package/pusudb-use-auth-jwt](pusudb-use-auth-jwt)
@@ -70,7 +70,7 @@ Normally the pusudb only serves JSON-Data. But with a middleware it's possible t
 
 ### HTTP before
 
-Use a middleware before query the database and the normal middlewares.
+Use a middleware before querying the database and the normal middlewares.
 
 ```js
 pusudb.useBefore('http', function(req, res, next){
@@ -85,7 +85,7 @@ pusudb.useBefore('http', function(req, res, next){
 
 ### HTTP
 
-Use a middleware after the query. To query the db use req.db.query like in the following example.
+Use a middleware after the querying.
 
 ```js
 pusudb.use('http', function(req, res, next){
@@ -126,6 +126,16 @@ pusudb.use('http', function(req, res, next){
 ```
 
 ### Websocket
+
+Use a middleware when a websocket is connecting.
+```js
+pusudb.useBefore('ws', function(req, socket, next){
+    console.log(req.headers)
+    next()
+})
+```
+
+Use a middleware on each message.
 ```js
 pusudb.use('ws', function(req, socket, next){
     console.log(req.headers)
@@ -146,7 +156,7 @@ Example url 'http://localhost:3000/[api]/[database]/[meta]
 <a name="put"></a>
 
 ### PUT
-To create unique-ids add '@key' to the key-property or the defined uniqueId-key in the pusudb-options.
+To create unique-ids add '@key' or the defined uniqueId-key in the pusudb-options. 
 ```
 GET
 http://localhost:3000/api/db/put?key=person:@key&value=Peter Pan
@@ -437,8 +447,7 @@ Write
 <a name="select"></a>
 
 ### SELECT MULTIPLE QUERIES
-
-Query the pusudb multiple-times in one step with the keywords select/list. 
+Querying the pusudb multiple-times in one step with the keywords select/list. 
 
 ```
 GET
@@ -537,13 +546,17 @@ http://localhost:3000/api
 
 ### SUBSCRIBE
 
-The data can be a STRING or ARRAY to subscribe multiple keys.
+The data can be a STRING or ARRAY to subscribe multiple keys. When a client put or update the value, the subscribed clients receives the actual data.
+
+Wildcard: '#'
 
 ```
 Websocket
 ws://localhost:3000/api/db
 Write
 {"meta":"subscribe","data":"chat:9bAuxQVYw"}
+
+{"meta":"subscribe","data":"chat:#"}
 ```
 #### Message when someone put or update the entry
 ```js
@@ -560,7 +573,7 @@ Write
 
 ### UNSUBSCRIBE
 
-The data can be a STRING or ARRAY to subscribe multiple keys.
+The data can be a STRING or ARRAY to subscribe multiple keys. When the websocket connection is closed, the key will unsubscribe automatically.
 
 ```
 Websocket
