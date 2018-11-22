@@ -20,6 +20,7 @@ Normally the pusudb serves JSON-data, but it's possible to add own middlewares t
   * [count](#count)
   * [filter](#filter)
   * [select multiple queries](#select)
+  * [encoded-query](#encoded)
   * [subscribe](#subscribe)
   * [unsubscribe](#unsubscribe)
 * [Author](#author)
@@ -489,15 +490,22 @@ http://localhost:3000/api
 }
 
 ```
+<a name="encoded"></a>
 
-#### Encoded
+### Encoded-query
 
-Use keyword hash to define a encoded query (base64).
+Use keyword hash to define a encoded query in base64.
 
 Generate base64-string:
 * browser: use atob and btoa
 * nodejs:
 ```js
+
+//example
+var jsonObject = {
+  key : 'mykey',
+  value: 'some-value' // or object
+}
 // create a encoded base64-string. escapeForUrl : bool to generate a get-query-friendly-string ;)
 var encoded = pusudb.encodeJsonToBase64(jsonObject, escapeForUrl)
 // decode the base64 to json
@@ -507,6 +515,11 @@ var decoded = pusudb.decodeBase64ToJson(encoded)
 ```
 GET
 http://localhost:3000/api/select/list?hash=W3sibmFtZSI6Im5hdiIsImRiIjoiZGIiLCJtZXRhIjoic3RyZWFtIiwiZGF0YSI6eyJsaW1pdCI6NSwiZ3RlIjoicGVyc29uOiIsImx0ZSI6InBlcnNvbjp%2BIn19LHsibmFtZSI6InVzZXIiLCJkYiI6ImRiIiwibWV0YSI6ImdldCIsImRhdGEiOnsia2V5IjoicGVyc29uOkFFWUM4WTc4NSJ9fV0%3D
+
+or
+
+http://localhost:3000/api/db/stream?hash=eyJndGUiOiJwZXJzb246IiwibHRlIjoicGVyc29uOn4ifQ==
+
 
 POST
 http://localhost:3000/api/select/list
