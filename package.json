@@ -1,6 +1,6 @@
 {
   "name": "pusudb",
-  "version": "1.2.5",
+  "version": "1.2.9",
   "description": "pusudb is a database-framework to query a key-value-storage by a webservice.",
   "main": "lib/main.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "node-wildcard": "0.0.9",
     "portfinder": "^1.0.19",
     "shortid": "^2.2.14",
-    "tcpleveldb": "^0.1.0",
+    "tcpleveldb": "^0.2.0",
     "ws": "^6.1.2"
   },
   "devDependencies": {
