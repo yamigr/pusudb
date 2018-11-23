@@ -145,6 +145,7 @@ pusudb.useBefore('ws', function(req, socket, next){
 Use a middleware on each message.
 ```js
 pusudb.use('ws', function(req, socket, next){
+    console.log(req.body)
     console.log(req.headers)
     next()
 })
