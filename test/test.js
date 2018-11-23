@@ -16,7 +16,7 @@ var wsIsOpen = false
 var wsData
 var ws
 var wsMiddleware = null
-
+var wsMiddlwareDb = null
 var uid = '==bla=='
 pusudb = new Pusudb(port, host, { log: true, prefix: '/api', path : '', uniqueId : uid })
 useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
@@ -31,6 +31,7 @@ describe('pusudb http', function() {
 
         pusudb.useBefore('ws', function(req, ws, next){
             wsMiddleware = req.headers
+            wsMiddlwareDb = req.db
             next()
         })
 
@@ -241,6 +242,8 @@ describe('pusudb http', function() {
             },500)
 
             setTimeout(function(){
+                wsMiddlwareDb
+                assert.notEqual(wsMiddlwareDb , null)
                 assert.equal(wsMiddleware['sec-websocket-version'] , 13)
                 done()
             },750)
@@ -363,7 +366,7 @@ describe('pusudb http', function() {
                 }
     
                 setTimeout(function(){
-                    assert.equal(wsData.err, 'internal error.')
+                    assert.equal(wsData.err, 'SyntaxError: Unexpected token b in JSON at position 0')
                     done()
                 },50)
         })

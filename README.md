@@ -132,7 +132,13 @@ Use a middleware when a websocket is connecting.
 ```js
 pusudb.useBefore('ws', function(req, socket, next){
     console.log(req.headers)
-    next()
+    // Additional query
+    req.db.query('./db','get', { key : "user:abc"}, function(doc){
+      if(doc.err)
+        next(doc.err) /* or res.writeHead(500) res.end(); direct in here*/
+      else
+        next()
+    })
 })
 ```
 
