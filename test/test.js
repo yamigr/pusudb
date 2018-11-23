@@ -18,30 +18,22 @@ var ws
 var wsMiddleware = null
 
 var uid = '==bla=='
+pusudb = new Pusudb(port, host, { log: true, prefix: '/api', path : '', uniqueId : uid })
+useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
+useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
 describe('pusudb http', function() {
     before(function () {
-        pusudb = new Pusudb(port, host, { log: true, prefix: '/api', path : __dirname + '/../mytestpath', uniqueId : uid })
-        useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
-        useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
+
 
         pusudb.use('http', useEjs.serve)
         pusudb.use('http', useStatic.serve)
 
-        pusudb.use('ws', function(req, ws, next){
+        pusudb.useBefore('ws', function(req, ws, next){
             wsMiddleware = req.headers
             next()
         })
 
-
-        ws = new Websocket('ws://' + host + ':' + port + '/api/db');
-        ws.on('open', function open() {
-            wsIsOpen = true
-        });
-        
-        ws.on('message', function incoming(data) {
-            wsData = JSON.parse(data)
-        });
 
     });
 
@@ -53,6 +45,15 @@ describe('pusudb http', function() {
         it('create pusudb', function(done) {
             pusudb.listen(function(p, h){
                 assert.equal(port + host , p + h);
+
+                ws = new Websocket('ws://' + host + ':' + port + '/api/db');
+                ws.on('open', function open() {
+                    wsIsOpen = true
+                });
+                
+                ws.on('message', function incoming(data) {
+                    wsData = JSON.parse(data)
+                });
                 done()
             })
         });
