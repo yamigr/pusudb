@@ -1,6 +1,6 @@
 # pusudb
 
-> framework to create webservices or web-apps.
+> framework to build web-, micro-services or web-apps.
 
 [![Build Status](https://travis-ci.org/yamigr/pusudb.svg?branch=master)](https://travis-ci.org/yamigr/pusudb)
 
