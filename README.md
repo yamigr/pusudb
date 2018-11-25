@@ -62,7 +62,7 @@ pusudb.listen(function(port, host){
 
 ## Middleware
 
-With a middleware it's possible to add own functionalities to the pusudb-framwork. To handle the request or response data, take a look at the node.js http documentation. To use data from one middleware to a later called middleware, add a new property to the request-object like req['my-new-prop'].
+With a middleware it's possible to add own functionalities to the pusudb-framework. To handle the request or response data, take a look at the node.js http documentation. For websocket the package ws. To use data from one middleware to a later called middleware, add a new property to the request-object like req['my-new-prop']. Reserved props are req.body,req.docs, req.params, req.db, req.pubsub.
 
 ### Links
 * [https://www.npmjs.com/package/pusudb-use-auth-jwt](pusudb-use-auth-jwt)
@@ -132,10 +132,11 @@ Use a middleware when a websocket is connecting.
 ```js
 pusudb.useBefore('ws', function(req, socket, next){
     console.log(req.headers)
+    console.log(req.params)
     // Additional query
     req.db.query('./db','get', { key : "user:abc"}, function(doc){
       if(doc.err)
-        next(doc.err) /* or res.writeHead(500) res.end(); direct in here*/
+        next(doc.err) /* or socket.send( string || buffer) */
       else
         next()
     })
@@ -145,8 +146,9 @@ pusudb.useBefore('ws', function(req, socket, next){
 Use a middleware on each message.
 ```js
 pusudb.use('ws', function(req, socket, next){
-    console.log(req.body)
     console.log(req.headers)
+    console.log(req.params)
+    console.log(req.body)
     next()
 })
 ```
@@ -157,14 +159,14 @@ pusudb.use('ws', function(req, socket, next){
 
 Example url 'http://localhost:3000/[api]/[database]/[meta]
 
-* api - the prefix where the query-string beginns
+* api - prefix for the query-string
 * database - the name of the database
-* meta - define the method
+* meta - define the querying-method
 
 <a name="put"></a>
 
 ### PUT
-To create unique-ids add '@key' or the defined uniqueId-key in the pusudb-options. 
+To create unique-ids add '@key' or the defined uniqueId-key at the pusudb-options. 
 ```
 GET
 http://localhost:3000/api/db/put?key=person:@key&value=Peter Pan
@@ -178,9 +180,9 @@ body = {
 }
 
 Websocket
-ws://localhost:3000/api/db
+ws://localhost:3000
 Write
-{"meta":"put","data":{"key":"person:@key","value":"Peter Pan"}}
+{"db":"db","meta":"put","data":{"key":"person:@key","value":"Peter Pan"}}
 ```
 #### Result
 ```js
@@ -205,9 +207,9 @@ body = {
 }
 
 Websocket
-ws://localhost:3000/api/db
+ws://localhost:3000
 Write
-{"meta":"get","data":{"key":"person:CXpkhn-3T"}}
+{"db":"db","meta":"get","data":{"key":"person:CXpkhn-3T"}}
 ```
 #### Result successful
 ```js
@@ -245,9 +247,9 @@ body =  [
 
 
 Websocket
-ws://localhost:3000/api/db
+ws://localhost:3000
 Write
-{"meta":"batch","data": [
+{"db":"db","meta":"batch","data": [
                           {"type":"del","key":"father"},
                           {"type":"put","key":"yamigr","value":"https://github.com/yamigr"},
                           {"type":"put","key":"p:1","value":{"age":24,"avatar":"gomolo"}},
@@ -294,9 +296,9 @@ body = {
 
 
 Websocket
-ws://localhost:3000/api/db
+ws://localhost:3000
 Write
-{"meta":"stream","data": { ..., stream-options, ... }}
+{"db":"db","meta":"stream","data": { ..., stream-options, ... }}
 ```
 #### Result successful
 ```js
@@ -335,9 +337,9 @@ body = {
 }
 
 Websocket
-ws://localhost:3000/api/db
+ws://localhost:3000
 Write
-{"meta":"del","data":{"key":"person:HSar_qa4f"}}
+{"db":"db","meta":"del","data":{"key":"person:HSar_qa4f"}}
 ```
 #### Result
 ```js
@@ -364,9 +366,9 @@ body = {
 }
 
 Websocket
-ws://localhost:3000/api/db
+ws://localhost:3000
 Write
-{"meta":"update","data":{"key":"person:HSar_qa4f","value":"NewName"}}
+{"db":"db","meta":"update","data":{"key":"person:HSar_qa4f","value":"NewName"}}
 ```
 #### Result successful
 ```js
@@ -407,9 +409,9 @@ body = {
 }
 
 Websocket
-ws://localhost:3000/api/db
+ws://localhost:3000
 Write
-{"meta":"count","data":{ <stream-options-body> }}
+{"db":"db","meta":"count","data":{ <stream-options-body> }}
 ```
 #### Result successful
 ```js
@@ -435,9 +437,9 @@ body = {
 }
 
 Websocket
-ws://localhost:3000/api/db
+ws://localhost:3000
 Write
-{"meta":"filter","data":{"value":"Sue"}}
+{"db":"db","meta":"filter","data":{"value":"Sue"}}
 ```
 #### Result successful
 ```js
@@ -456,7 +458,7 @@ Write
 
 ### SELECT MULTIPLE QUERIES
 
-Querying the pusudb multiple-times in one step with the keywords select/list. A base64-encoded JSON-object is supported too.
+Querying the pusudb multiple-times in one step with the keywords select/list.
 
 ```
 GET
@@ -504,17 +506,17 @@ http://localhost:3000/api
 Use keyword hash to define a encoded query in base64.
 
 Generate base64-string:
-* browser: use atob and btoa
+* browser: use functions atob and btoa
 * nodejs:
 ```js
 
 //example
-var jsonObject = {
+var sendObj = {
   key : 'mykey',
   value: 'some-value' // or object
 }
 // create a encoded base64-string. escapeForUrl : bool to generate a get-query-friendly-string ;)
-var encoded = pusudb.encodeJsonToBase64(jsonObject, escapeForUrl)
+var encoded = pusudb.encodeJsonToBase64(sendObj, escapeForUrl)
 // decode the base64 to json
 var decoded = pusudb.decodeBase64ToJson(encoded)
 ```
@@ -550,17 +552,19 @@ http://localhost:3000/api
 
 ### SUBSCRIBE
 
-The data can be a STRING or ARRAY to subscribe multiple keys. When a client put or update the value, the subscribed clients receives the actual data.
+The data can be a STRING for single key or ARRAY to subscribe multiple keys. When a client put or update the value, the subscribed clients receives the actual data.
 
 Wildcard: '#'
 
 ```
 Websocket
-ws://localhost:3000/api/db
+ws://localhost:3000
 Write
-{"meta":"subscribe","data":"chat:9bAuxQVYw"}
+{"db":"db","meta":"subscribe","data":"chat:9bAuxQVYw"}
 
-{"meta":"subscribe","data":"chat:#"}
+or with wildcard
+
+{"db":"db","meta":"subscribe","data":"chat:#"}
 ```
 #### Message when someone put or update the entry
 ```js
@@ -581,9 +585,9 @@ The data can be a STRING or ARRAY to subscribe multiple keys. When the websocket
 
 ```
 Websocket
-ws://localhost:3000/api/db
+ws://localhost:3000
 Write
-{"meta":"unsubscribe","data":"chat:9bAuxQVYw"}
+{"db":"db","meta":"unsubscribe","data":"chat:9bAuxQVYw"}
 ```
 
 <a name="authors"></a>

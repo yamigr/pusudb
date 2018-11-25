@@ -24,18 +24,13 @@ useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */],
 
 describe('pusudb http', function() {
     before(function () {
-
-
         pusudb.use('http', useEjs.serve)
         pusudb.use('http', useStatic.serve)
-
         pusudb.useBefore('ws', function(req, ws, next){
             wsMiddleware = req.headers
             wsMiddlwareDb = req.db
             next()
         })
-
-
     });
 
     after( function(){
@@ -47,7 +42,7 @@ describe('pusudb http', function() {
             pusudb.listen(function(p, h){
                 assert.equal(port + host , p + h);
 
-                ws = new Websocket('ws://' + host + ':' + port + '/api/db');
+                ws = new Websocket('ws://' + host + ':' + port);
                 ws.on('open', function open() {
                     wsIsOpen = true
                 });
@@ -148,7 +143,7 @@ describe('pusudb http', function() {
                 if(!usedMiddleware1){
                     usedMiddleware1 = true
                     assert.equal(req.params.query.key, 'yamigr')
-                    assert.equal(req.params.api.db, 'db')
+                    assert.equal(req.params.api.db, './db')
                     assert.equal(req.params.api.meta, 'get')
                     assert.equal(req.docs.data.value, 'https://github.com/yamigr')
                     assert.notEqual(req.meta, null)
@@ -167,7 +162,7 @@ describe('pusudb http', function() {
                 if(!usedMiddleware2){
                     usedMiddleware2 = true
                     assert.equal(req.params.query.key, 'yamigr')
-                    assert.equal(req.params.api.db, 'db')
+                    assert.equal(req.params.api.db, './db')
                     assert.equal(req.params.api.meta, 'get')
                     assert.equal(req.docs.data, '')
                     assert.notEqual(req.meta, null)
@@ -233,7 +228,7 @@ describe('pusudb http', function() {
             let usedMiddleware3 = false
             setTimeout(function(){
                 try{
-                ws.send(JSON.stringify({"meta":"put","data":{"key":"person:wsTest", "value":"Hello Test!"}}));
+                ws.send(JSON.stringify({"db":"db","meta":"put","data":{"key":"person:wsTest", "value":"Hello Test!"}}));
                 } catch (e) {
                 /* handle error */
                 console.error(e)
@@ -252,7 +247,7 @@ describe('pusudb http', function() {
 
         it('websocket put', function(done){
             try {
-            ws.send(JSON.stringify({"meta":"put","data":{"key":"person:wsTest", "value":"Hello Test!"}}));
+            ws.send(JSON.stringify({"db":"db","meta":"put","data":{"key":"person:wsTest", "value":"Hello Test!"}}));
             } catch (e) {
             /* handle error */
             console.error(e)
@@ -266,7 +261,7 @@ describe('pusudb http', function() {
 
         it('websocket get', function(done){
                 try {
-                ws.send(JSON.stringify({"meta":"get","data":{"key":"person:wsTest"}}));
+                ws.send(JSON.stringify({"db":"db","meta":"get","data":{"key":"person:wsTest"}}));
                 } catch (e) {
                 /* handle error */
                 console.error(e)
@@ -280,7 +275,7 @@ describe('pusudb http', function() {
 
         it('websocket subscribe', function(done){
                 try {
-                ws.send(JSON.stringify({"meta":"subscribe","data":"person:wsTest"}));
+                ws.send(JSON.stringify({"db":"db","meta":"subscribe","data":"person:wsTest"}));
                 } catch (e) {
                 /* handle error */
                 console.error(e)
@@ -296,14 +291,14 @@ describe('pusudb http', function() {
                 request('http://'+ host + ':' + port + '/api/db/update?key=person:wsTest&value=new message');
                 setTimeout(function(){
                     assert.equal(wsData.data.value, 'new message')
-                    ws.send(JSON.stringify({"meta":"unsubscribe","data":"person:wsTest"}));
+                    ws.send(JSON.stringify({"db":"db","meta":"unsubscribe","data":"person:wsTest"}));
                     done()
                 },50)
         })
 
         it('websocket subscribe wildcard', function(done){
             try {
-            ws.send(JSON.stringify({"meta":"subscribe","data":"ya:#"}));
+            ws.send(JSON.stringify({"db":"db","meta":"subscribe","data":"ya:#"}));
             } catch (e) {
             /* handle error */
             console.error(e)
@@ -319,7 +314,7 @@ describe('pusudb http', function() {
                 request('http://'+ host + ':' + port + '/api/db/update?key=ya:1&value=new message');
                 setTimeout(function(){
                     assert.equal(wsData.data.value, 'new message')
-                    ws.send(JSON.stringify({"meta":"unsubscribe","data":"ya:#"}));
+                    ws.send(JSON.stringify({"db":"db","meta":"unsubscribe","data":"ya:#"}));
                     done()
                 },50)
         })
@@ -345,7 +340,7 @@ describe('pusudb http', function() {
 
         it('websocket wrong meta', function(done){
             try {
-                ws.send(JSON.stringify({"meta":"blabla","data":"ya:#"}));
+                ws.send(JSON.stringify({"db":"db","meta":"blabla","data":"ya:#"}));
                 } catch (e) {
                 /* handle error */
                 console.error(e)
