@@ -157,7 +157,10 @@ pusudb.use('ws', function(req, socket, next){
 
 ## API
 
-Example url 'http://localhost:3000/[api]/[database]/[meta]
+Example url 
+* GET and POST 'http://localhost:3000/[api]/[database]/[meta]
+* Websocket 'http://localhost:3000'
+
 
 * api - prefix for the query-string
 * database - the name of the database
@@ -473,7 +476,7 @@ body = [
 ]
 
 Websocket
-http://localhost:3000/api
+ws://localhost:3000
 {
    "meta": "list",
    "data": [
@@ -538,7 +541,7 @@ body = {
 }
 
 Websocket
-http://localhost:3000/api
+ws://localhost:3000
 {
    "meta": "list",
    "data": {
