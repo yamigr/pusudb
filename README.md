@@ -159,7 +159,7 @@ pusudb.use('ws', function(req, socket, next){
 
 Example url 
 * GET and POST 'http://localhost:3000/[api]/[database]/[meta]
-* Websocket 'http://localhost:3000'
+* Websocket 'ws://localhost:3000'
 
 
 * api - prefix for the query-string
