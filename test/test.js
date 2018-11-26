@@ -8,6 +8,7 @@ var UseStatic = require('pusudb-use-static-file')
 var Websocket = require('ws')
 var port = 3005
 var host = 'localhost'
+var prefix = '/api'
  
 var data
 var pusudb
@@ -18,7 +19,7 @@ var ws
 var wsMiddleware = null
 var wsMiddlwareDb = null
 var uid = '==bla=='
-pusudb = new Pusudb(port, host, { log: true, prefix: '/api', path : '', uniqueId : uid })
+pusudb = new Pusudb(port, host, { log: false, prefix: '/api', path : '', uniqueId : uid })
 useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
 useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
@@ -26,6 +27,14 @@ describe('pusudb http', function() {
     before(function () {
         pusudb.use('http', useEjs.serve)
         pusudb.use('http', useStatic.serve)
+
+        pusudb.useConnect('ws', function(req, ws, next){
+            console.log('connected')
+            console.log(req.headers)
+            console.log(req.params) // URL params
+            next()
+        })
+
         pusudb.useBefore('ws', function(req, ws, next){
             wsMiddleware = req.headers
             wsMiddlwareDb = req.db
@@ -42,7 +51,7 @@ describe('pusudb http', function() {
             pusudb.listen(function(p, h){
                 assert.equal(port + host , p + h);
 
-                ws = new Websocket('ws://' + host + ':' + port);
+                ws = new Websocket('ws://' + host + ':' + port + prefix);
                 ws.on('open', function open() {
                     wsIsOpen = true
                 });

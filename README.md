@@ -128,11 +128,12 @@ pusudb.use('http', function(req, res, next){
 
 ### Websocket
 
-Use a middleware when a websocket is connecting.
+Use middleware when a websocket is connecting.
+
 ```js
-pusudb.useBefore('ws', function(req, socket, next){
+pusudb.useConnect('ws', function(req, socket, next){
     console.log(req.headers)
-    console.log(req.params)
+    console.log(req.params) // URL params
     // Additional query
     req.db.query('./db','get', { key : "user:abc"}, function(doc){
       if(doc.err)
@@ -143,12 +144,31 @@ pusudb.useBefore('ws', function(req, socket, next){
 })
 ```
 
-Use a middleware on each message.
+Use middlware before querying the pusudb.
+
 ```js
-pusudb.use('ws', function(req, socket, next){
+pusudb.useBefore('ws', function(req, socket, next){
     console.log(req.headers)
     console.log(req.params)
-    console.log(req.body)
+
+    // Additional query
+    req.db.query('./db','get', { key : "user:abc"}, function(doc){
+      if(doc.err)
+        next(doc.err) /* or socket.send( string || buffer) */
+      else
+        next()
+    })
+})
+```
+
+Use middlware after querying.
+
+```js
+pusudb.use('ws', function(req, socket, next){
+    console.log(req.headers) 
+    console.log(req.params) // URL params
+    console.log(req.body) // Body-Data
+    console.log(req.docs) // Result sending to client 
     next()
 })
 ```
@@ -159,12 +179,12 @@ pusudb.use('ws', function(req, socket, next){
 
 Example url 
 * GET and POST 'http://localhost:3000/[api]/[database]/[meta]
-* Websocket 'ws://localhost:3000'
+* Websocket 'ws://localhost:3000/[api]'
 
 
 * api - prefix for the query-string
-* database - the name of the database
-* meta - define the querying-method
+* database - the name of the database, only http
+* meta - define the querying-method, only http
 
 <a name="put"></a>
 
@@ -183,7 +203,7 @@ body = {
 }
 
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 Write
 {"db":"db","meta":"put","data":{"key":"person:@key","value":"Peter Pan"}}
 ```
@@ -210,7 +230,7 @@ body = {
 }
 
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 Write
 {"db":"db","meta":"get","data":{"key":"person:CXpkhn-3T"}}
 ```
@@ -250,7 +270,7 @@ body =  [
 
 
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 Write
 {"db":"db","meta":"batch","data": [
                           {"type":"del","key":"father"},
@@ -299,7 +319,7 @@ body = {
 
 
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 Write
 {"db":"db","meta":"stream","data": { ..., stream-options, ... }}
 ```
@@ -340,7 +360,7 @@ body = {
 }
 
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 Write
 {"db":"db","meta":"del","data":{"key":"person:HSar_qa4f"}}
 ```
@@ -369,7 +389,7 @@ body = {
 }
 
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 Write
 {"db":"db","meta":"update","data":{"key":"person:HSar_qa4f","value":"NewName"}}
 ```
@@ -412,7 +432,7 @@ body = {
 }
 
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 Write
 {"db":"db","meta":"count","data":{ <stream-options-body> }}
 ```
@@ -440,7 +460,7 @@ body = {
 }
 
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 Write
 {"db":"db","meta":"filter","data":{"value":"Sue"}}
 ```
@@ -476,7 +496,7 @@ body = [
 ]
 
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 {
    "meta": "list",
    "data": [
@@ -541,7 +561,7 @@ body = {
 }
 
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 {
    "meta": "list",
    "data": {
@@ -561,7 +581,7 @@ Wildcard: '#'
 
 ```
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 Write
 {"db":"db","meta":"subscribe","data":"chat:9bAuxQVYw"}
 
@@ -588,7 +608,7 @@ The data can be a STRING or ARRAY to subscribe multiple keys. When the websocket
 
 ```
 Websocket
-ws://localhost:3000
+ws://localhost:3000/api
 Write
 {"db":"db","meta":"unsubscribe","data":"chat:9bAuxQVYw"}
 ```
