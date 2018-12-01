@@ -23,6 +23,7 @@ Normally the pusudb serves JSON-data, but it's possible to add own middlewares t
   * [encoded-query](#encoded)
   * [subscribe](#subscribe)
   * [unsubscribe](#unsubscribe)
+  * [publish without storing data](#publish)
 * [Author](#author)
 * [License](#license)
 
@@ -611,6 +612,23 @@ Websocket
 ws://localhost:3000/api
 Write
 {"db":"db","meta":"unsubscribe","data":"chat:9bAuxQVYw"}
+```
+<a name="publish"></a>
+
+### PUBLISH
+
+Use meta publish to publish without storing data.
+
+```
+GET
+http://localhost:3000/api/db/publish?key=score:CXpkhn-3T&value=42
+
+...
+
+Websocket
+ws://localhost:3000/api
+Write
+{"db":"db","meta":"publish","data": {"key":"person:HSar_qa4f","value":"NewName"}}
 ```
 
 <a name="authors"></a>

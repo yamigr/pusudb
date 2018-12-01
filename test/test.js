@@ -291,12 +291,24 @@ describe('pusudb http', function() {
                 }
     
                 setTimeout(function(){
-                    assert.equal(wsData.data, 'subscribed')
+                    assert.equal(wsData.data, 'subscribe')
                     done()
                 },50)
         })  
 
-        it('websocket publish', function(done){
+        it('websocket publish with publish without storge', function(done){
+            request('http://'+ host + ':' + port + '/api/db/publish?key=person:wsTest&value=42');
+            setTimeout(function(){
+                assert.equal(wsData.data.value, '42')
+                request('http://'+ host + ':' + port + '/api/db/get?key=person:wsTest', function (error, response, body) {
+                    data = JSON.parse(body)
+                    assert.notEqual(data.data.value, '42')
+                    done(data.err)
+                });
+            },50)
+        })
+    
+        it('websocket publish with update', function(done){
                 request('http://'+ host + ':' + port + '/api/db/update?key=person:wsTest&value=new message');
                 setTimeout(function(){
                     assert.equal(wsData.data.value, 'new message')
@@ -314,7 +326,7 @@ describe('pusudb http', function() {
             }
 
             setTimeout(function(){
-                assert.equal(wsData.data, 'subscribed')
+                assert.equal(wsData.data, 'subscribe')
                 done()
             },50)
         })  
