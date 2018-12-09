@@ -10,6 +10,7 @@ Normally the pusudb serves JSON-data, but it's possible to add own middlewares t
 * [Installing](#installing)
 * [Server](#server)
 * [Middleware](#middleware)
+* [Add-on](#addon)
 * [API](#api)
   * [put](#put)
   * [get](#get)
@@ -173,6 +174,13 @@ pusudb.use('ws', function(req, socket, next){
     next()
 })
 ```
+<a name="middleware"></a>
+
+## Add-on
+
+### Links
+* [https://www.npmjs.com/package/pusudb-connector](pusudb-connector)
+
 
 <a name="api"></a>
 
