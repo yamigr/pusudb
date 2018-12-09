@@ -174,7 +174,7 @@ pusudb.use('ws', function(req, socket, next){
     next()
 })
 ```
-<a name="middleware"></a>
+<a name="addon"></a>
 
 ## Add-on
 
