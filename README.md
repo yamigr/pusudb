@@ -634,16 +634,20 @@ or with wildcard
 // BATCH
 {
   "err": null,
-  "data": 
+  "data": {
     "key" : "chat:",
     "value" : [
       {
         "key": "chat:9bAuxQVYw",
         "value": "Aloah Joe!"
       },
+      {
+        "key": "chat:8_zBaVYw",
+        "value": "Moin Sue!"
+      },
       // other entries ...
-
     ]
+  }
 }
 ```
 
