@@ -1,11 +1,13 @@
 # pusudb
 
-> framework to build web-, micro-services or web-apps.
+> framework to build web- and micro-services.
 
 [![Build Status](https://travis-ci.org/yamigr/pusudb.svg?branch=master)](https://travis-ci.org/yamigr/pusudb)
 
-The pusudb has a http-webserver to handle rest-requests and responses and a websocket-server to handle publishes and subscribtions. The data is stored in a key-value-storage. 
+The pusudb has a http-webserver to handle rest-requests and responses and a websocket-server to handle publishes and subscriptions. The data is stored in a key-value-storage. 
 Normally the pusudb serves JSON-data, but it's possible to add own middlewares to extends the functionality.
+
+<a name="top"></a>
 
 * [Installing](#installing)
 * [Server](#server)
@@ -20,11 +22,11 @@ Normally the pusudb serves JSON-data, but it's possible to add own middlewares t
   * [update](#update)
   * [count](#count)
   * [filter](#filter)
-  * [select multiple queries](#select)
+  * [multiple queries](#select)
   * [encoded-query](#encoded)
   * [subscribe](#subscribe)
   * [unsubscribe](#unsubscribe)
-  * [publish without storing data](#publish)
+  * [publish](#publish)
 * [Author](#author)
 * [License](#license)
 
@@ -63,6 +65,7 @@ pusudb.listen(function(port, host){
 <a name="middleware"></a>
 
 ## Middleware
+[[Back To Top]](#top)
 
 With a middleware it's possible to add own functionalities to the pusudb-framework. To handle the request or response data, take a look at the node.js http documentation. For websocket the package ws. To use data from one middleware to a later called middleware, add a new property to the request-object like req['my-new-prop']. Reserved props are req.body,req.docs, req.params, req.db, req.pubsub.
 
@@ -177,6 +180,9 @@ pusudb.use('ws', function(req, socket, next){
 <a name="addon"></a>
 
 ## Add-on
+[[Back To Top]](#top)
+
+List of pusudb-addons.
 
 ### Links
 * [https://www.npmjs.com/package/pusudb-connector](pusudb-connector)
@@ -185,12 +191,13 @@ pusudb.use('ws', function(req, socket, next){
 <a name="api"></a>
 
 ## API
+[[Back To Top]](#top)
 
 Example url 
 * GET and POST 'http://localhost:3000/[api]/[database]/[meta]
 * Websocket 'ws://localhost:3000/[api]'
 
-
+Details
 * api - prefix for the query-string
 * database - the name of the database, only http
 * meta - define the querying-method, only http
@@ -198,6 +205,8 @@ Example url
 <a name="put"></a>
 
 ### PUT
+[[Back To Top]](#top)
+
 To create unique-ids add '@key' or the defined uniqueId-key at the pusudb-options. 
 ```
 GET
@@ -227,6 +236,8 @@ Write
 <a name="get"></a>
 
 ### GET
+[[Back To Top]](#top)
+
 ```
 GET
 http://localhost:3000/api/db/get?key=person:CXpkhn-3T
@@ -266,6 +277,8 @@ Write
 <a name="batch"></a>
 
 ### BATCH
+[[Back To Top]](#top)
+
 ```
 POST
 http://localhost:3000/api/db/batch
@@ -300,6 +313,7 @@ Write
 <a name="stream"></a>
 
 ### STREAM
+[[Back To Top]](#top)
 
 Options: greater / less than (gt / lt), greater / less than and equal (gte / lte), limit (limit) and reverse (reverse)
 
@@ -356,6 +370,7 @@ Write
 <a name="del"></a>
 
 ### DEL
+[[Back To Top]](#top)
 
 ```
 GET
@@ -384,6 +399,7 @@ Write
 <a name="update"></a>
 
 ### UPDATE
+[[Back To Top]](#top)
 
 ```
 GET
@@ -426,6 +442,7 @@ Write
 <a name="count"></a>
 
 ### COUNT
+[[Back To Top]](#top)
 
 Use the [stream-options](#stream) to count a specific stream or keep it empty to count all. 
 
@@ -456,6 +473,7 @@ Write
 <a name="filter"></a>
 
 ### FILTER
+[[Back To Top]](#top)
 
 ```
 GET
@@ -489,6 +507,7 @@ Write
 <a name="select"></a>
 
 ### SELECT MULTIPLE QUERIES
+[[Back To Top]](#top)
 
 Querying the pusudb multiple-times in one step with the keywords select/list.
 
@@ -534,6 +553,7 @@ ws://localhost:3000/api
 <a name="encoded"></a>
 
 ### Encoded-query
+[[Back To Top]](#top)
 
 Use keyword hash to define a encoded query in base64.
 
@@ -583,8 +603,10 @@ ws://localhost:3000/api
 <a name="subscribe"></a>
 
 ### SUBSCRIBE
+[[Back To Top]](#top)
 
-The data can be a STRING for single key or ARRAY to subscribe multiple keys. When a client put or update the value, the subscribed clients receives the actual data.
+The data can be a STRING for single key or ARRAY to subscribe multiple keys. When a client put, update or publish a value, the subscribed clients receives the actual data.
+If a client batch multiple entries, the keys has a common substring, then the subscriber receives all batches.
 
 Wildcard: '#'
 
@@ -598,7 +620,7 @@ or with wildcard
 
 {"db":"db","meta":"subscribe","data":"chat:#"}
 ```
-#### Message when someone put or update the entry
+#### Message when someone put, update or publish the entry
 ```js
 {
   "err": null,
@@ -607,13 +629,27 @@ or with wildcard
     "value": "Aloah Joe!"
   }
 }
+
+
+// BATCH and subscribed with wildcard
+
+{
+  "err": null,
+  "data": [{
+    "key": "chat:9bAuxQVYw",
+    "value": "Aloah Joe!"
+  },
+  ...
+  ]
+}
 ```
 
 <a name="unsubscribe"></a>
 
 ### UNSUBSCRIBE
+[[Back To Top]](#top)
 
-The data can be a STRING or ARRAY to subscribe multiple keys. When the websocket connection is closed, the key will unsubscribe automatically.
+The data can be a STRING or ARRAY to unsubscribe multiple keys. When the websocket connection is closed, the key will unsubscribe automatically.
 
 ```
 Websocket
@@ -624,8 +660,9 @@ Write
 <a name="publish"></a>
 
 ### PUBLISH
+[[Back To Top]](#top)
 
-Use meta publish to publish without storing data.
+Use meta publish to publish the data without storing.
 
 ```
 GET
@@ -642,12 +679,14 @@ Write
 <a name="authors"></a>
 
 ## Authors
+[[Back To Top]](#top)
 
 * **Yannick Grund** - *Initial work* - [yamigr](https://github.com/yamigr)
 
 <a name="license"></a>
 
 ## License
+[[Back To Top]](#top)
 
 This project is licensed under the MIT License
 
