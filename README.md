@@ -606,7 +606,7 @@ ws://localhost:3000/api
 [[Back To Top]](#top)
 
 The data can be a STRING for single key or ARRAY to subscribe multiple keys. When a client put, update or publish a value, the subscribed clients receives the actual data.
-If a client batch multiple entries, the keys has a common substring, then the subscriber receives all batches.
+If a client batch multiple entries and the keys has a common substring, then the subscriber receives the batches.
 
 Wildcard: '#'
 
@@ -631,16 +631,19 @@ or with wildcard
 }
 
 
-// BATCH and subscribed with wildcard
-
+// BATCH
 {
   "err": null,
-  "data": [{
-    "key": "chat:9bAuxQVYw",
-    "value": "Aloah Joe!"
-  },
-  ...
-  ]
+  "data": 
+    "key" : "chat:",
+    "value" : [
+      {
+        "key": "chat:9bAuxQVYw",
+        "value": "Aloah Joe!"
+      },
+      // other entries ...
+
+    ]
 }
 ```
 
