@@ -19,7 +19,7 @@ var ws
 var wsMiddleware = null
 var wsMiddlwareDb = null
 var uid = '==bla=='
-pusudb = new Pusudb(port, host, { log: false, prefix: '/api', path : '', uniqueId : uid })
+pusudb = new Pusudb(port, host, { log: true, prefix: '/api', path : '', uniqueId : uid })
 useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
 useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
@@ -397,7 +397,7 @@ describe('pusudb http', function() {
                 }
     
                 setTimeout(function(){
-                    assert.equal(wsData.err, 'query not exist.')
+                    assert.equal(wsData.err, 'Empty data.')
                     done()
                 },50)
         })
