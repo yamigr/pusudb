@@ -1,7 +1,7 @@
 {
   "name": "pusudb",
   "version": "2.4.2",
-  "description": "pusudb is a database-framework to query a key-value-storage by a webservice.",
+  "description": "Framework to build web- and micro-services.",
   "main": "lib/main.js",
   "scripts": {
     "test": "mocha",
