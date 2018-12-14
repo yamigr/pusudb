@@ -229,6 +229,8 @@ Write
 ```js
 {
   "err": null,
+  "db": "db",
+  "meta": "put",
   "data": "person:zCzm7e7XT"
 }
 ```
@@ -258,6 +260,8 @@ Write
 ```js
 {
   "err": null,
+  "db": "db",
+  "meta": "get",
   "data": {
     "key": "person:CXpkhn-3T",
     "value": "Peter Pan"
@@ -268,6 +272,8 @@ Write
 ```js
 {
   "err": "NotFoundError: Key not found in database [person:CX]",
+  "db": "db",
+  "meta": "get",
   "data": {
     "key": "person:CX"
   }
@@ -284,7 +290,7 @@ POST
 http://localhost:3000/api/db/batch
 
 body =  [
-  {"type":"del","key":"father"},
+  {"type":"del","key":"old"},
   {"type":"put","key":"yamigr","value":"https://github.com/yamigr"},
   {"type":"put","key":"p:1","value":{"age":24,"avatar":"gomolo"}},
   {"type":"put","key":"p:2","value":{"age":19,"avatar":"azuzi"}}
@@ -295,7 +301,7 @@ Websocket
 ws://localhost:3000/api
 Write
 {"db":"db","meta":"batch","data": [
-                          {"type":"del","key":"father"},
+                          {"type":"del","key":"old"},
                           {"type":"put","key":"yamigr","value":"https://github.com/yamigr"},
                           {"type":"put","key":"p:1","value":{"age":24,"avatar":"gomolo"}},
                           {"type":"put","key":"p:2","value":{"age":19,"avatar":"azuzi"}}
@@ -306,6 +312,8 @@ Write
 ```js
 {
   "err": null,
+  "db": "db",
+  "meta": "batch",
   "data": 4
 }
 ```
@@ -322,7 +330,7 @@ GET all
 http://localhost:3000/api/db/stream 
 
 GET pagenation
-http://localhost:3000/api/db/stream?gt='last-key-in-list'&limit=50
+http://localhost:3000/api/db/stream?gt='last-key-in-stream'&limit=50
 
 GET stream of persons
 http://localhost:3000/api/db/stream?gte=person:&lte=person:~
@@ -344,12 +352,14 @@ body = {
 Websocket
 ws://localhost:3000/api
 Write
-{"db":"db","meta":"stream","data": { ..., stream-options, ... }}
+{"db":"db","meta":"stream","data": { stream-options }}
 ```
 #### Result successful
 ```js
 {
   "err": null,
+  "db": "db",
+  "meta": "stream",
   "data": [
     {
       "key": "person:AEYC8Y785",
@@ -392,6 +402,8 @@ Write
 ```js
 {
   "err": null,
+  "db": "db",
+  "meta": "del",
   "data": "person:HSar_qa4f"
 }
 ```
@@ -422,6 +434,8 @@ Write
 ```js
 {
   "err": null,
+  "db": "db",
+  "meta": "update",
   "data": {
     "key": "person:AEYC8Y785",
     "value": "NewName"
@@ -432,6 +446,8 @@ Write
 ```js
 {
   "err": "NotFoundError: Key not found in database [person:HSar_qa4f]",
+  "db": "db",
+  "meta": "update",
   "data": {
     "key": "person:HSar_qa4f",
     "value": "NewName"
@@ -466,6 +482,8 @@ Write
 ```js
 {
   "err": null,
+  "db": "db",
+  "meta": "count",
   "data": 9
 }
 ```
@@ -495,11 +513,14 @@ Write
 ```js
 {
   "err": null,
+  "db": "db",
+  "meta": "filter",
   "data": [
     {
       "key": "person:9bAuxQVYw",
       "value": "Sue"
     }
+    // more Sue's
   ]
 }
 ```
@@ -620,20 +641,31 @@ or with wildcard
 
 {"db":"db","meta":"subscribe","data":"chat:#"}
 ```
-#### Message when someone put, update or publish the entry
+#### Message when someone put, update, delete or publish a value
 ```js
 {
   "err": null,
+  "db": "db",
+  "meta": "put [,update or publish]",
   "data": {
     "key": "chat:9bAuxQVYw",
     "value": "Aloah Joe!"
   }
 }
 
+// DEL
+{
+  "err": null,
+  "db": "db",
+  "meta": "del",
+  "data": "person:HSar_qa4f"
+}
 
 // BATCH
 {
   "err": null,
+  "db": "db",
+  "meta": "batch",
   "data": {
     "key" : "chat:",
     "value" : [

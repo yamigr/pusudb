@@ -19,7 +19,8 @@ var ws
 var wsMiddleware = null
 var wsMiddlwareDb = null
 var uid = '==bla=='
-pusudb = new Pusudb(port, host, { log: true, prefix: '/api', path : '', uniqueId : uid })
+
+pusudb = new Pusudb(port, host, { log: false, prefix: '/api', path : '', uniqueId : uid })
 useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
 useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
@@ -29,9 +30,9 @@ describe('pusudb http', function() {
         pusudb.use('http', useStatic.serve)
 
         pusudb.useConnect('ws', function(req, ws, next){
-            console.log('connected')
-            console.log(req.headers)
-            console.log(req.params) // URL params
+            //console.log('connected')
+            //console.log(req.headers)
+            //console.log(req.params) // URL params
             next()
         })
 
@@ -46,7 +47,7 @@ describe('pusudb http', function() {
         process.exit()
     })
 
-    describe('#GET API', function() {
+    describe('#http', function() {
         it('create pusudb', function(done) {
             pusudb.listen(function(p, h){
                 assert.equal(port + host , p + h);
@@ -231,10 +232,10 @@ describe('pusudb http', function() {
 
     });
 
-    describe('pusudb websocket', function() {
+    describe('#websocket', function() {
 
         it('websocket middleware', function(done){
-            let usedMiddleware3 = false
+            let used = false
             setTimeout(function(){
                 try{
                 ws.send(JSON.stringify({"db":"db","meta":"put","data":{"key":"person:wsTest", "value":"Hello Test!"}}));
@@ -242,8 +243,8 @@ describe('pusudb http', function() {
                 /* handle error */
                 console.error(e)
                 }
-
             },500)
+
 
             setTimeout(function(){
                 wsMiddlwareDb
@@ -261,11 +262,15 @@ describe('pusudb http', function() {
             /* handle error */
             console.error(e)
             }
-
-            setTimeout(function(){
-                assert.equal(wsData.data, 'person:wsTest')
-                done()
-            },50)
+            let used = false
+            ws.on('message', function incoming(data) {
+                if(!used){
+                    used = true
+                    data = JSON.parse(data)
+                    assert.equal(data.data, 'person:wsTest')
+                    done()
+                }
+            });
         })  
 
         it('websocket get', function(done){
@@ -276,10 +281,15 @@ describe('pusudb http', function() {
                 console.error(e)
                 }
     
-                setTimeout(function(){
-                    assert.equal(wsData.data.value, 'Hello Test!')
-                    done()
-                },50)
+                let used = false
+                ws.on('message', function incoming(data) {
+                    if(!used){
+                        used = true
+                        data = JSON.parse(data)
+                        assert.equal(data.data.value, 'Hello Test!')
+                        done()
+                    }
+                });
         })  
 
         it('websocket subscribe', function(done){
@@ -290,32 +300,56 @@ describe('pusudb http', function() {
                 console.error(e)
                 }
     
-                setTimeout(function(){
-                    assert.equal(wsData.data, 'subscribe')
-                    done()
-                },50)
+                let used = false
+                ws.on('message', function incoming(data) {
+                    if(!used){
+                        used = true
+                        data = JSON.parse(data)
+                        assert.equal(data.meta, 'subscribe')
+                        done()
+                    }
+                });
         })  
 
-        it('websocket publish with publish without storge', function(done){
-            request('http://'+ host + ':' + port + '/api/db/publish?key=person:wsTest&value=42');
-            setTimeout(function(){
+        it('websocket publish with publish without storage', function(done){
+            request('http://'+ host + ':' + port + '/api/db/publish?key=person:wsTest&value=42', function(err, res, body){
                 assert.equal(wsData.data.value, '42')
                 request('http://'+ host + ':' + port + '/api/db/get?key=person:wsTest', function (error, response, body) {
                     data = JSON.parse(body)
                     assert.notEqual(data.data.value, '42')
                     done(data.err)
                 });
-            },50)
+            });
         })
     
         it('websocket publish with update', function(done){
                 request('http://'+ host + ':' + port + '/api/db/update?key=person:wsTest&value=new message');
-                setTimeout(function(){
-                    assert.equal(wsData.data.value, 'new message')
+                let used = false
+                ws.on('message', function incoming(data) {
+                    if(!used){
+                        used = true
+                        data = JSON.parse(data)
+                        assert.equal(data.meta, 'update')
+                        assert.equal(data.data.value, 'new message')
+                        done()
+                    }
+                });
+        })
+
+        it('websocket publish delete meta', function(done){
+            request('http://'+ host + ':' + port + '/api/db/del?key=person:wsTest');
+            let used = false
+            ws.on('message', function incoming(data) {
+                if(!used){
+                    used = true
+                    data = JSON.parse(data)
+                    assert.equal(data.meta, 'del')
                     ws.send(JSON.stringify({"db":"db","meta":"unsubscribe","data":"person:wsTest"}));
                     done()
-                },50)
+                }
+            });
         })
+
 
         it('websocket subscribe wildcard', function(done){
             try {
@@ -324,20 +358,29 @@ describe('pusudb http', function() {
             /* handle error */
             console.error(e)
             }
-
-            setTimeout(function(){
-                assert.equal(wsData.data, 'subscribe')
-                done()
-            },50)
+            let used = false
+            ws.on('message', function incoming(data) {
+                if(!used){
+                    used = true
+                    data = JSON.parse(data)
+                    assert.equal(data.meta, 'subscribe')
+                    done()
+                }
+            });
         })  
 
         it('websocket publish wildcard', function(done){
-                request('http://'+ host + ':' + port + '/api/db/update?key=ya:1&value=new message');
-                setTimeout(function(){
-                    assert.equal(wsData.data.value, 'new message')
+            request('http://'+ host + ':' + port + '/api/db/update?key=ya:1&value=new message');
+            let used = false
+            ws.on('message', function incoming(data) {
+                if(!used){
+                    used = true
+                    data = JSON.parse(data)
+                    assert.equal(data.data.value, 'new message')
                     ws.send(JSON.stringify({"db":"db","meta":"unsubscribe","data":"ya:#"}));
                     done()
-                },50)
+                }
+            });
         })
 
 
@@ -360,46 +403,58 @@ describe('pusudb http', function() {
         })
 
         it('websocket wrong meta', function(done){
-            try {
+                try {
                 ws.send(JSON.stringify({"db":"db","meta":"blabla","data":"ya:#"}));
                 } catch (e) {
                 /* handle error */
                 console.error(e)
                 }
-    
-                setTimeout(function(){
-                    assert.equal(wsData.err, 'query not exist.')
-                    done()
-                },50)
+                let used = false
+                ws.on('message', function incoming(data) {
+                    if(!used){
+                        used = true
+                        data = JSON.parse(data)
+                        assert.equal(data.err, 'query not exist.')
+                        done()
+                    }
+                });
         })
 
         it('websocket Unexpected token', function(done){
-            try {
+                try {
                 ws.send('blabla');
                 } catch (e) {
                 /* handle error */
                 console.error(e)
                 }
-    
-                setTimeout(function(){
-                    assert.equal(wsData.err, 'SyntaxError: Unexpected token b in JSON at position 0')
-                    done()
-                },50)
+                let used = false
+                ws.on('message', function incoming(data) {
+                    if(!used){
+                        used = true
+                        data = JSON.parse(data)
+                        assert.equal(data.err, 'SyntaxError: Unexpected token b in JSON at position 0')
+                        done()
+                    }
+                });
         })
 
         
         it('websocket empty data', function(done){
-            try {
+                try {
                 ws.send(JSON.stringify({}));
                 } catch (e) {
                 /* handle error */
                 console.error(e)
                 }
-    
-                setTimeout(function(){
-                    assert.equal(wsData.err, 'Empty data.')
-                    done()
-                },50)
+                let used = false
+                ws.on('message', function incoming(data) {
+                    if(!used){
+                        used = true
+                        data = JSON.parse(data)
+                        assert.equal(data.err, 'Empty data.')
+                        done()
+                    }
+                });
         })
     })
 });
