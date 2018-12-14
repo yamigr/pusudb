@@ -20,7 +20,7 @@ var wsMiddleware = null
 var wsMiddlwareDb = null
 var uid = '==bla=='
 
-pusudb = new Pusudb(port, host, { log: false, prefix: '/api', path : '', uniqueId : uid })
+pusudb = new Pusudb(port, host, { log: false, prefix: '/api', path : '', uniqueId : uid, db_list : ['db'] })
 useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
 useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
@@ -433,6 +433,7 @@ describe('pusudb http', function() {
                         used = true
                         data = JSON.parse(data)
                         assert.equal(data.err, 'SyntaxError: Unexpected token b in JSON at position 0')
+                        data = 'blabla'
                         done()
                     }
                 });
@@ -451,11 +452,30 @@ describe('pusudb http', function() {
                     if(!used){
                         used = true
                         data = JSON.parse(data)
-                        assert.equal(data.err, 'Empty data.')
+                        assert.equal(data.err, 'SyntaxError: Unexpected token b in JSON at position 0')
                         done()
                     }
                 });
         })
+
+        it('websocket blocked db', function(done){
+            try {
+                ws.send(JSON.stringify({"db":"haha","meta":"get","data":{"key":"person:wsTest"}}));
+            } catch (e) {
+            /* handle error */
+            console.error(e)
+            }
+            let used = false
+            ws.on('message', function incoming(data) {
+                if(!used){
+                    used = true
+                    data = JSON.parse(data)
+                    console.log(data)
+                    assert.equal(data.err, 'SyntaxError: Unexpected token b in JSON at position 0')
+                    done()
+                }
+            });
+    })
     })
 });
   

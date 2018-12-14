@@ -50,12 +50,16 @@ var host = 'localhost'
 Pusudb(port, host, options)
 
 Options
-* log : BOOL - log some data in the console
-* prefix: STRING - the prefix for the database-query
-* path : main path where the database is located (relative or absolute)
-* uniqueId : default : '@key'. is replaced by a unique key
+* log : BOOL - console-log
+* prefix: STRING - default '/api' url-prefix
+* path : STRING - database path (relative or absolute)
+* uniqueId : STRING - default : '@key' convert into a uniqueId by pusudb
+* db_port: NUMBER - default pusudb-port + 1
+* db_list: ARRAY - default [] - no limitation of databases
+* ws_active: BOOL - default true -> enable / disable websocket
+* http_active: BOOL - default true -> enable / disable http-server
 */
-var pusudb = new Pusudb(3000, 'localhost', {  log: false, prefix: '/api', path : __dirname + '/../database', uniqueId : '--uid' })
+var pusudb = new Pusudb(3000, 'localhost', {  log: false, prefix: '/api', path : __dirname + '/../database', uniqueId : '--uid', db_list : ['db'] })
 
 pusudb.listen(function(port, host){
     console.log('pusudb listening:', port, host)
