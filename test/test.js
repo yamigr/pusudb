@@ -470,7 +470,6 @@ describe('pusudb http', function() {
                 if(!used){
                     used = true
                     data = JSON.parse(data)
-                    console.log(data)
                     assert.equal(data.err, 'SyntaxError: Unexpected token b in JSON at position 0')
                     done()
                 }
