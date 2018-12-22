@@ -71,12 +71,22 @@ pusudb.listen(function(port, host){
 ## Middleware
 [[Back To Top]](#top)
 
-With a middleware it's possible to add own functionalities to the pusudb-framework. To handle the request or response data, take a look at the node.js http documentation. For websocket the package ws. To use data from one middleware to a later called middleware, add a new property to the request-object like req['my-new-prop']. Reserved props are req.body,req.docs, req.params, req.db, req.pubsub.
+With a middleware it's possible to add own functionalities to the pusudb-framework. To handle the request or response data, take a look at the node.js http documentation. For websocket the package ws. To use data from one middleware to a later called middleware, add a new property to the request-object like req['my-new-prop']. 
+Reserved props are :
+* req.params - request parameters
+* req.body - request body
+* req.meta - database metas
+* req.docs - database result { err : '', data : ...}
+* req.render - object to add rendering data for the ejs-middleware
+* req.user - user if auth is active
+* req.db - instance to query the database inside a middleware
+* req.pubsub - instance to publish or subscribe data
 
 ### Links
 * [https://www.npmjs.com/package/pusudb-use-auth-jwt](pusudb-use-auth-jwt)
 * [https://www.npmjs.com/package/pusudb-use-ejs](pusudb-use-ejs)
 * [https://www.npmjs.com/package/pusudb-use-static-file](pusudb-use-static-file)
+* [https://www.npmjs.com/package/pusudb-use-sass](pusudb-use-sass)
 
 ### HTTP before
 
@@ -88,6 +98,7 @@ pusudb.useBefore('http', function(req, res, next){
     console.log(req.params) // HTTP parameters like pathname,..
     console.log(req.params.query) //GET Parameters
     console.log(req.body) // POST Body
+    console.log(req.render) // Add props to render to access the oject in the ejs-middleware
     // do some header-checks or parse the req.body by a schema
      next() /* or res.writeHead(401) res.end(); direct in here*/
 })
@@ -103,13 +114,16 @@ pusudb.use('http', function(req, res, next){
     console.log(req.params.query) //GET Parameters
     console.log(req.body) // POST Body
     console.log(req.docs) // Database result-object descriped in API
-    
+    console.log(req.render) // Add props to render to access the oject in the ejs-middleware
+    console.log(req.user) // User if auth is active
+    // call next() to jump into next middleware
+
     // Additional query
-    req.db.query('./db','get', { key : "user:abc"}, function(doc){
+    req.db.query('./db','get', { key : "news:20181222"}, function(doc){
       if(doc.err)
         next(doc.err) /* or res.writeHead(500) res.end(); direct in here*/
       else
-        next()
+        next() // Yees, all ok
     })
 
 })
@@ -141,8 +155,8 @@ Use middleware when a websocket is connecting.
 
 ```js
 pusudb.useConnect('ws', function(req, socket, next){
-    console.log(req.headers)
-    console.log(req.params) // URL params
+    // Same req-props described above
+    // Call next() to jump into next middleware
     // Additional query
     req.db.query('./db','get', { key : "user:abc"}, function(doc){
       if(doc.err)
