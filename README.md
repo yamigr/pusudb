@@ -86,7 +86,6 @@ Reserved props are :
 * [https://www.npmjs.com/package/pusudb-use-auth-jwt](pusudb-use-auth-jwt)
 * [https://www.npmjs.com/package/pusudb-use-ejs](pusudb-use-ejs)
 * [https://www.npmjs.com/package/pusudb-use-static-file](pusudb-use-static-file)
-* [https://www.npmjs.com/package/pusudb-use-sass](pusudb-use-sass)
 
 ### HTTP before
 
@@ -204,7 +203,7 @@ List of pusudb-addons.
 
 ### Links
 * [https://www.npmjs.com/package/pusudb-connector](pusudb-connector)
-
+* [https://www.npmjs.com/package/run-sass](run-sass)
 
 <a name="api"></a>
 
