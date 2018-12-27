@@ -225,12 +225,12 @@ Details
 ### PUT
 [[Back To Top]](#top)
 
-To create unique-ids add '@key' or the defined uniqueId-key at the pusudb-options. 
+To create unique-ids add '@key' or the defined uniqueId-key at the pusudb-options. If posted by form and no value and key property existing, then the body is the value and a uniqueId will defined by pusudb. But if a key-prop exists, then it will copied to key and the other props will be copied to value.
 ```
 GET
 http://localhost:3000/api/db/put?key=person:@key&value=Peter Pan
 
-POST
+POST JSON and FORM
 http://localhost:3000/api/db/put
 
 body = {
@@ -262,7 +262,7 @@ Write
 GET
 http://localhost:3000/api/db/get?key=person:CXpkhn-3T
 
-POST
+POST JSON and FORM
 http://localhost:3000/api/db/get
 
 body = {
@@ -304,7 +304,7 @@ Write
 [[Back To Top]](#top)
 
 ```
-POST
+POST JSON
 http://localhost:3000/api/db/batch
 
 body =  [
@@ -354,7 +354,7 @@ GET stream of persons
 http://localhost:3000/api/db/stream?gte=person:&lte=person:~
 
 
-POST
+POST JSON and FORM
 http://localhost:3000/api/db/stream
 
 body = {
@@ -404,7 +404,7 @@ Write
 GET
 http://localhost:3000/api/db/del?key=person:HSar_qa4f
 
-POST
+POST JSON and FORM
 http://localhost:3000/api/db/del
 
 body = {
@@ -431,11 +431,13 @@ Write
 ### UPDATE
 [[Back To Top]](#top)
 
+If posted by form add properties key and all the other properties without 'value'.
+
 ```
 GET
 http://localhost:3000/api/db/update?key=person:HSar_qa4f&value=NewName
 
-POST
+POST JSON and FORM
 http://localhost:3000/api/db/update
 
 body = {
@@ -484,7 +486,7 @@ Use the [stream-options](#stream) to count a specific stream or keep it empty to
 GET
 http://localhost:3000/api/db/count?<stream-options-query>
 
-POST
+POST JSON and FORM
 http://localhost:3000/api/db/count
 
 body = {
@@ -515,7 +517,7 @@ Write
 GET
 http://localhost:3000/api/db/filter?value=Sue
 
-POST
+POST JSON and FORM
 http://localhost:3000/api/db/filter
 
 body = {
@@ -554,7 +556,7 @@ Querying the pusudb multiple-times in one step with the keywords select/list.
 GET
 http://localhost:3000/api/select/list?nav=db,stream,limit 5,gte person:,lte person:~&user=db,get,key person:AEYC8Y785
 
-POST
+POST JSON
 http://localhost:3000/api/select/list
 
 body = [
@@ -621,7 +623,7 @@ or
 http://localhost:3000/api/db/stream?hash=eyJndGUiOiJwZXJzb246IiwibHRlIjoicGVyc29uOn4ifQ==
 
 
-POST
+POST JSON and FORM
 http://localhost:3000/api/select/list
 
 body = {

@@ -34,6 +34,7 @@
   "license": "MIT",
   "dependencies": {
     "async": "^2.6.1",
+    "multiparty": "^4.2.1",
     "node-wildcard": "0.0.9",
     "portfinder": "^1.0.20",
     "shortid": "^2.2.14",

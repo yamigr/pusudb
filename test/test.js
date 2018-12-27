@@ -2,6 +2,7 @@
 
 var request = require('request');
 var assert = require('assert');
+var querystring = require('querystring');
 var Pusudb = require('../lib/main')
 var UseEjs = require('pusudb-use-ejs')
 var UseStatic = require('pusudb-use-static-file')
@@ -60,9 +61,32 @@ describe('pusudb http', function() {
                 ws.on('message', function incoming(data) {
                     wsData = JSON.parse(data)
                 });
+
                 done()
             })
         });
+
+        it('del the db', function(done){
+            request('http://'+ host + ':' + port + '/api/db/stream', function (err, response, body) {
+                assert.equal(err, null);
+                var batcher = []
+
+                body = JSON.parse(body)
+
+                for(let doc in body.data){
+                    batcher.push({type: 'del', key: body.data[doc].key})
+                }
+
+                request.post({url:'http://'+ host + ':' + port + '/api/db/batch',     
+                    json: batcher
+                    }, 
+                    function(err,httpResponse,body){ 
+                        done(err)
+                })
+
+
+            });
+        })
 
         it('http put', function(done) {
             request('http://'+ host + ':' + port + '/api/db/put?key=person:' + uid + '&value=Test', function (error, response, body) {
@@ -89,7 +113,7 @@ describe('pusudb http', function() {
         });
 
         
-        it('http batch post', function(done) {
+        it('http batch post json', function(done) {
             data =  [
                 {type:"del",key:"father"},
                 {type:"put",key:"yamigr",value:"https://github.com/yamigr"},
@@ -104,6 +128,26 @@ describe('pusudb http', function() {
                                 assert.equal(body.data, Object.keys(data).length.toString())
                                 done(err)
                             })
+
+        });
+
+        it('http batch post multiform', function(done) {
+
+            var form = {
+                key : 'zoooooooooom:' + uid,
+                username: 'usr',
+                password: 'pwd',
+                opaque: 'opaque',
+                logintype: '1'
+            };
+
+            request.post({url:'http://'+ host + ':' + port + '/api/db/put',     
+                            body: querystring.stringify(form)
+                        }, 
+                        function(err,httpResponse,body){ 
+                            assert.equal(body.err,null)
+                            done(err)
+                        })
 
         });
 
