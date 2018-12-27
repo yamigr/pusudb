@@ -56,6 +56,7 @@ Options
 * uniqueId : STRING - default : '@key' convert into a uniqueId by pusudb
 * db_port: NUMBER - default pusudb-port + 1
 * db_list: ARRAY - default [] - no limitation of databases
+* db_block: ARRAY - default [] - define some db's which can not be accessed from public, like the user-db
 * ws_active: BOOL - default true -> enable / disable websocket
 * http_active: BOOL - default true -> enable / disable http-server
 */
