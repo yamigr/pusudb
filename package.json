@@ -38,7 +38,7 @@
     "node-wildcard": "0.0.9",
     "portfinder": "^1.0.20",
     "shortid": "^2.2.14",
-    "tcpleveldb": "^1.0.2",
+    "tcpleveldb": "^1.0.3",
     "ws": "^6.1.2"
   },
   "devDependencies": {

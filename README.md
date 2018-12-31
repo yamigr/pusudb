@@ -456,10 +456,7 @@ Write
   "err": null,
   "db": "db",
   "meta": "update",
-  "data": {
-    "key": "person:AEYC8Y785",
-    "value": "NewName"
-  }
+  "data": "person:AEYC8Y785"
 }
 ```
 #### Result when key doesn't exist
@@ -468,10 +465,7 @@ Write
   "err": "NotFoundError: Key not found in database [person:HSar_qa4f]",
   "db": "db",
   "meta": "update",
-  "data": {
-    "key": "person:HSar_qa4f",
-    "value": "NewName"
-  }
+  "data": "person:HSar_qa4f"
 }
 ```
 
@@ -646,7 +640,7 @@ ws://localhost:3000/api
 ### SUBSCRIBE
 [[Back To Top]](#top)
 
-The data can be a STRING for single key or ARRAY to subscribe multiple keys. When a client put, update or publish a value, the subscribed clients receives the actual data.
+The data can be a STRING for single key or ARRAY to subscribe multiple keys. When a client put, update or publish a value, the subscribed clients receives the actual data or the key.
 If a client batch multiple entries and the keys has a common substring, then the subscriber receives the batches.
 
 Wildcard: '#'
@@ -666,11 +660,20 @@ or with wildcard
 {
   "err": null,
   "db": "db",
-  "meta": "put [,update or publish]",
+  "meta": "put [or publish]",
   "data": {
     "key": "chat:9bAuxQVYw",
     "value": "Aloah Joe!"
   }
+}
+
+
+// UPDATE
+{
+  "err": null,
+  "db": "db",
+  "meta": "update",
+  "data": "person:HSar_qa4f"
 }
 
 // DEL
