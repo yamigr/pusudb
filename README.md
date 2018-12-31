@@ -660,20 +660,11 @@ or with wildcard
 {
   "err": null,
   "db": "db",
-  "meta": "put [or publish]",
+  "meta": "put [, update, publish]",
   "data": {
     "key": "chat:9bAuxQVYw",
     "value": "Aloah Joe!"
   }
-}
-
-
-// UPDATE
-{
-  "err": null,
-  "db": "db",
-  "meta": "update",
-  "data": "person:HSar_qa4f"
 }
 
 // DEL
