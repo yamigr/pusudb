@@ -18,6 +18,8 @@ Normally the pusudb serves JSON-data, but it's possible to add own middlewares t
   * [get](#get)
   * [batch](#batch)
   * [stream](#stream)
+  * [keys](#keys)
+  * [values](#values)
   * [del](#del)
   * [update](#update)
   * [count](#count)
@@ -27,7 +29,7 @@ Normally the pusudb serves JSON-data, but it's possible to add own middlewares t
   * [subscribe](#subscribe)
   * [unsubscribe](#unsubscribe)
   * [publish](#publish)
-* [Author](#author)
+* [Authors](#authors)
 * [License](#license)
 
 <a name="installing"></a>
@@ -393,6 +395,72 @@ Write
       "value": "Jan"
     }
   ]
+}
+```
+
+<a name="keys"></a>
+
+### KEYS
+[[Back To Top]](#top)
+
+Use the [stream-options](#stream) to get a specific stream or keep it empty. 
+
+```
+GET
+http://localhost:3000/api/db/keys?<stream-options-query>
+
+POST JSON and FORM
+http://localhost:3000/api/db/keys
+
+body = {
+  <stream-options-body>
+}
+
+Websocket
+ws://localhost:3000/api
+Write
+{"db":"db","meta":"keys","data":{ <stream-options-body> }}
+```
+#### Result successful
+```js
+{
+  "err": null,
+  "db": "db",
+  "meta": "keys",
+  "data": [ ..., ..., ...]
+}
+```
+
+<a name="values"></a>
+
+### VALUES
+[[Back To Top]](#top)
+
+Use the [stream-options](#stream) to get a specific stream or keep it empty. 
+
+```
+GET
+http://localhost:3000/api/db/values?<stream-options-query>
+
+POST JSON and FORM
+http://localhost:3000/api/db/values
+
+body = {
+  <stream-options-body>
+}
+
+Websocket
+ws://localhost:3000/api
+Write
+{"db":"db","meta":"values","data":{ <stream-options-body> }}
+```
+#### Result successful
+```js
+{
+  "err": null,
+  "db": "db",
+  "meta": "values",
+  "data": [ ..., ..., ...]
 }
 ```
 
