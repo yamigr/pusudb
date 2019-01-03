@@ -197,7 +197,7 @@ describe('pusudb http', function() {
                 if(!usedMiddleware1){
                     usedMiddleware1 = true
                     assert.equal(req.params.query.key, 'yamigr')
-                    assert.equal(req.params.api.db, './db')
+                    assert.equal(req.params.api.db, 'db')
                     assert.equal(req.params.api.meta, 'get')
                     assert.equal(req.docs.data.value, 'https://github.com/yamigr')
                     assert.notEqual(req.meta, null)
@@ -216,7 +216,7 @@ describe('pusudb http', function() {
                 if(!usedMiddleware2){
                     usedMiddleware2 = true
                     assert.equal(req.params.query.key, 'yamigr')
-                    assert.equal(req.params.api.db, './db')
+                    assert.equal(req.params.api.db, 'db')
                     assert.equal(req.params.api.meta, 'get')
                     assert.equal(req.docs.data, '')
                     assert.notEqual(req.meta, null)
