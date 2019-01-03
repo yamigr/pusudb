@@ -41,6 +41,16 @@ npm install pusudb --save
 <a name="server"></a>
 
 ## Server
+The env-variables 'http', 'ws' and 'pubsub' are for debugging the app in the console. Check package debug for more informations.
+
+Example windows power-shell
+```
+// enable debug * all or the variables 'http', 'ws' and 'pubsub' 
+$Env:DEBUG="*"; node .\examples\server.js
+
+// disable debug
+$Env:DEBUG=""; node .\examples\server.js
+```
 
 ```js
 var Pusudb = require('pusudb')
@@ -52,7 +62,6 @@ var host = 'localhost'
 Pusudb(port, host, options)
 
 Options
-* log : BOOL - console-log
 * prefix: STRING - default '/api' url-prefix
 * path : STRING - database path (relative or absolute)
 * uniqueId : STRING - default : '@key' convert into a uniqueId by pusudb
@@ -60,10 +69,10 @@ Options
 * db_list: ARRAY - default [] - no limitation of databases
 * db_block: ARRAY - default [] - define some db's which can not be accessed from public, like the user-db
 * ws_active: BOOL - default true -> enable / disable websocket
-* heartbeat: INTEGER - default 30000ms -> ping pong event for ws
+* heartbeat: INTEGER - default 30000ms -> ping pong event for ws. If 0 -> not active
 * http_active: BOOL - default true -> enable / disable http-server
 */
-var pusudb = new Pusudb(3000, 'localhost', {  log: false, prefix: '/api', path : __dirname + '/../database', uniqueId : '--uid', db_list : ['db'] })
+var pusudb = new Pusudb(3000, 'localhost', { prefix: '/api', path : __dirname + '/../database', uniqueId : '--uid', db_list : ['db'] })
 
 pusudb.listen(function(port, host){
     console.log('pusudb listening:', port, host)
