@@ -1,6 +1,6 @@
 {
   "name": "pusudb",
-  "version": "3.6.4",
+  "version": "3.6.5",
   "description": "Framework to build web- and micro-services.",
   "main": "lib/main.js",
   "scripts": {
