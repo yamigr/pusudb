@@ -41,16 +41,7 @@ npm install pusudb --save
 <a name="server"></a>
 
 ## Server
-The env-variables 'http', 'ws' and 'pubsub' are for debugging the app in the console. Check package debug for more informations.
-
-Example windows power-shell
-```
-// enable debug * all or the variables 'http', 'ws' and 'pubsub' 
-$Env:DEBUG="*"; node .\examples\server.js
-
-// disable debug
-$Env:DEBUG=""; node .\examples\server.js
-```
+For debuging it has the env-variables 'pusudb:http', 'pusudb:ws' and 'pusudb:pubsub'. Check package [debug](https://www.npmjs.com/package/debug) for more informations. (os ms like $Env:DEBUG="pusudb"; or $Env:DEBUG=""; )
 
 ```js
 var Pusudb = require('pusudb')

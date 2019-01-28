@@ -21,7 +21,7 @@ var wsMiddleware = null
 var wsMiddlwareDb = null
 var uid = '==bla=='
 
-pusudb = new Pusudb(port, host, { log: false, prefix: '/api', path : '', uniqueId : uid, db_list : ['db'] })
+pusudb = new Pusudb(port, host, { prefix: '/api', path : '', uniqueId : uid, db_list : ['db'] })
 useStatic = new UseStatic(__dirname + '/static', ['/block2', /* blocked pathnames */], { prefix : '/static' }) 
 useEjs = new UseEjs(__dirname + '/render', ['/block1', /* blocked pathnames */], { prefix : '' }) 
 
