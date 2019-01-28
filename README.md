@@ -41,7 +41,7 @@ npm install pusudb --save
 <a name="server"></a>
 
 ## Server
-For debuging it has the env-variables 'pusudb:http', 'pusudb:ws' and 'pusudb:pubsub'. Check package [debug](https://www.npmjs.com/package/debug) for more informations. (os ms like $Env:DEBUG="pusudb"; or $Env:DEBUG=""; )
+For debuging it has the env-variables 'pusudb:http', 'pusudb:ws' and 'pusudb:pubsub'. Check package [debug](https://www.npmjs.com/package/debug) for more informations.
 
 ```js
 var Pusudb = require('pusudb')
