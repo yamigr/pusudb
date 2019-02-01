@@ -784,7 +784,7 @@ Write
 ### PUBLISH
 [[Back To Top]](#top)
 
-Use meta publish to publish the data without storing.
+Use meta publish or a custom-meta to publish the data without storing.
 
 ```
 GET
@@ -796,6 +796,9 @@ Websocket
 ws://localhost:3000/api
 Write
 {"db":"db","meta":"publish","data": {"key":"person:HSar_qa4f","value":"NewName"}}
+
+{"db":"db","meta":"customPublisher","data": {"key":"person:HSar_qa4f","value":"NewName"}}
+
 ```
 
 <a name="authors"></a>

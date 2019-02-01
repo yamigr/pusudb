@@ -446,7 +446,7 @@ describe('pusudb http', function() {
             },50)
         })
 
-        it('websocket wrong meta', function(done){
+        it('websocket custom meta', function(done){
                 try {
                 ws.send(JSON.stringify({"db":"db","meta":"blabla","data":"ya:#"}));
                 } catch (e) {
@@ -458,7 +458,7 @@ describe('pusudb http', function() {
                     if(!used){
                         used = true
                         data = JSON.parse(data)
-                        assert.equal(data.err, 'query not exist.')
+                        assert.equal(data.meta, 'blabla')
                         done()
                     }
                 });
