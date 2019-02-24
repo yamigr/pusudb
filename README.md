@@ -575,22 +575,22 @@ Write
 
 ### FILTER
 [[Back To Top]](#top)
+Filter the stream by a mongodb-like-array-filtering-syntax. Check [bloc](https://www.npmjs.com/package/bloc) by davidtpate. Thx for the package :)!
 
 ```
 GET
-http://localhost:3000/api/db/filter?value=Sue
+http://localhost:3000/api/db/filter?match={"value.age":{"$in":[19,24]}}
 
-POST JSON and FORM
+POST JSON
 http://localhost:3000/api/db/filter
 
-body = {
-  value: "Sue"
-}
+body = { value : { $in : ['Special key', 'Whoooooooop']}} or when value is object
+body = { 'value.obj.nested' : { $in : ['filter'] }}
 
 Websocket
 ws://localhost:3000/api
 Write
-{"db":"db","meta":"filter","data":{"value":"Sue"}}
+{"db":"db","meta":"filter","data": { 'value.obj.nested' : { $in : ['filter'] }} }
 ```
 #### Result successful
 ```js
@@ -601,9 +601,9 @@ Write
   "data": [
     {
       "key": "person:9bAuxQVYw",
-      "value": "Sue"
+      "value": "Special key"
     }
-    // more Sue's
+    // ....
   ]
 }
 ```

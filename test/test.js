@@ -88,14 +88,14 @@ describe('pusudb http', function() {
             });
         })
 
-        it('http put', function(done) {
+        it('http get put', function(done) {
             request('http://'+ host + ':' + port + '/api/db/put?key=person:' + uid + '&value=Test', function (error, response, body) {
                 data = JSON.parse(body)
                 done(data.err)
             });
         });
 
-        it('http get', function(done) {
+        it('http get get', function(done) {
             request('http://'+ host + ':' + port + '/api/db/get?key=' + data.data, function (error, response, body) {
                 data = JSON.parse(body)
                 assert.equal(data.data.value, 'Test')
@@ -103,7 +103,7 @@ describe('pusudb http', function() {
             });
         });
 
-        it('http del', function(done) {
+        it('http get del', function(done) {
             let key = data.data.key
             request('http://'+ host + ':' + port + '/api/db/del?key=' + key, function (error, response, body) {
                 data = JSON.parse(body)
@@ -151,7 +151,7 @@ describe('pusudb http', function() {
 
         });
 
-        it('http stream', function(done) {
+        it('http get stream', function(done) {
             request('http://'+ host + ':' + port + '/api/db/stream?limit=2', function (err, response, body) {
                 body = JSON.parse(body)
                 assert.equal(body.data.length, 2)
@@ -159,10 +159,10 @@ describe('pusudb http', function() {
             });
         });
 
-        it('http filter', function(done) {
-            request('http://'+ host + ':' + port + '/api/db/filter?value=https://github.com/yamigr', function (err, response, body) {
+        it('http get filter', function(done) {
+            request('http://'+ host + ':' + port + '/api/db/filter?match={"value.age":{"$in":[19,24]}}', function (err, response, body) {
                 body = JSON.parse(body)
-                assert.equal(body.data.length, 1)
+                assert.equal(body.data.length, 2)
                 done(err)
             });
         });

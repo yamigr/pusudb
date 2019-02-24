@@ -33,14 +33,14 @@
   "author": "yannick grund, https://github.com/yamigr",
   "license": "MIT",
   "dependencies": {
-    "async": "^2.6.1",
+    "async": "^2.6.2",
     "debug": "^4.1.1",
     "multiparty": "^4.2.1",
     "node-wildcard": "0.0.9",
     "portfinder": "^1.0.20",
     "shortid": "^2.2.14",
-    "tcpleveldb": "^1.1.1",
-    "ws": "^6.1.2"
+    "tcpleveldb": "^1.2.1",
+    "ws": "^6.1.4"
   },
   "devDependencies": {
     "autocannon": "^3.2.0",
