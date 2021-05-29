@@ -40,7 +40,7 @@
     "portfinder": "^1.0.20",
     "shortid": "^2.2.14",
     "tcpleveldb": "^1.2.1",
-    "ws": "^6.1.4"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "autocannon": "^3.2.0",
