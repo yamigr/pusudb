@@ -33,7 +33,7 @@
   "author": "yannick grund, https://github.com/yamigr",
   "license": "MIT",
   "dependencies": {
-    "async": "^2.6.2",
+    "async": "^3.2.2",
     "debug": "^4.1.1",
     "multiparty": "^4.2.1",
     "node-wildcard": "0.0.9",
